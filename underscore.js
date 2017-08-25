@@ -31,4 +31,28 @@ window._ = {
     }
     return obj;
   },
+
+  // Determine whether all of the elements match a truth test. Delegate to
+  // Javascript 1.6's every(), if it is present.
+  all: function(obj, iterator, context) {
+    if (obj.every) return obj.every(iterator, context);
+    var result = true;
+    _.each(obj, function(value, index) {
+      result = result && !!iterator.call(context, value, index);
+      if (!result) throw '__break__';
+    });
+    return result;
+  },
+
+  // Determine if at least one element in the object matches a truth test. Use
+  // Javascript 1.6's some(), if it exists.
+  any: function(obj, iterator, context) {
+    if (obj.some) return obj.some(iterator, context);
+    var result = false;
+    _.each(obj, function(value, index) {
+      if (result = !!iterator.call(context, value, index)) throw '__break__';
+    })
+  },
+
+
 }
