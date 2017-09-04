@@ -54,5 +54,51 @@ window._ = {
     })
   },
 
+  // Return the results of applying the iterator to each element. Use Javascript
+  // 1.6's version of map, if possible.
+  map: function(obj, iterator, context) {
+    if (obj.map) return obj.map(iterator, context);
+    var results = [];
+    _.each(obj, function(value, index) {
+      results.push(iterator.call(context, value, index));
+    });
+    return results;
+  },
+
+  // Return the first value which passes a truth test.
+  detect: function(obj, iterator, context) {
+    var result;
+    _.each(obj, function(value, index) {
+      if (iterator.call(context, value, index)) {
+        result = value;
+        throw '__break__';
+      }
+    });
+    return result;
+  },
+
+  select: function(obj, iterator, context) {
+    if (obj.filter) return obj.filter(iterator, context);
+    var results = [];
+    _.each(obj, function(value, index) {
+      if (iterator.call(context, value, index)) results.push(value);
+    });
+    return results;
+  },
+
+  // Determine if a given value is included in the object, based on '=='.
+  include: function(obj, target) {
+    if (_.isArray(obj)) if (obj.indexOf(target) != -1) return true;
+    var found = false;
+    _.each(obj, function(value) {
+      if (value == target) {
+        found = true;
+        throw '__break__';
+      }
+    });
+    return found;
+  },
+
+  // Aka reduce. Inject builds up a single result from a list of values.
 
 }
