@@ -148,8 +148,8 @@ window._ = {
     }
     var result;
     _.each(obj, function(value, index) {
-      computed = iterator ? iterator.call(context, value, index) : value;
-      if (value == null || computed >= result.computed) result = {value: value, computed: computed};
+      var computed = iterator ? iterator.call(context, value, index) : value;
+      if (result == null || computed >= result.computed) result = {value: value, computed: computed};
     });
     return result.value;
   },
@@ -161,8 +161,8 @@ window._ = {
     }
     var result;
     _.each(obj, function(value, index) {
-      computed = iterator ? iterator.call(context, value, index) : value;
-      if (value == null || computed < result.computed) result = {value: value, computed: computed};
+      var computed = iterator ? iterator.call(context, value, index) : value;
+      if (result == null || computed < result.computed) result = {value: value, computed: computed};
     });
     return result.value;
   },
@@ -317,7 +317,7 @@ window._ = {
   // Extend a given object with all of the properties in a source object.
   extend: function(destination, source) {
     for (var property in source) {
-      destination[Prototype] = source[property];
+      destination[property] = source[property];
     }
     return destination;
   },

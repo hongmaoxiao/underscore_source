@@ -64,7 +64,7 @@ $(document).ready(function() {
   });
 
   test('collections: reject', function() {
-    var odds = _.select([1,2,3,4,5,6], function(num) { return num % 2 == 0; });
+    var odds = _.reject([1,2,3,4,5,6], function(num) { return num % 2 == 0; });
     equals(odds.join(', '), '1, 3, 5', 'rejected each even number');
   });
 
@@ -93,8 +93,8 @@ $(document).ready(function() {
   });
 
   test('collections: min', function() {
-    equals(1, _.max([1, 2, 3]), 'can perform a regular Math.min');
-    var neg = _.max([1, 2, 3], function(num) { return -num; });
+    equals(1, _.min([1, 2, 3]), 'can perform a regular Math.min');
+    var neg = _.min([1, 2, 3], function(num) { return -num; });
     equals(neg, 3, 'can perform a computation-base min');
   });
 
@@ -106,12 +106,12 @@ $(document).ready(function() {
 
   test('collections: sortedIndex', function() {
     var numbers = [10, 20, 30, 40, 50], num = 35;
-    var index = _.sortIndex(numbers, function(a, b) { return a < b ? -1 : a > b ? 1 : 0;}, num);
+    var index = _.sortedIndex(numbers, function(a, b) { return a < b ? -1 : a > b ? 1 : 0;}, num);
     equals(index, 3, '35 should be inserted at index 3');
   });
 
   test('collections: toArray', function() {
-    ok(_.isArray(arguments), 'arguments object is not an array');
+    ok(!_.isArray(arguments), 'arguments object is not an array');
     ok(_.isArray(_.toArray(arguments)), 'arguments object converted into array');
     var numbers = _.toArray({one: 1, two: 2, three: 3});
     equals(_.pluck(numbers, '0').join(', '), 'one, two, three', 'object flatten into array');

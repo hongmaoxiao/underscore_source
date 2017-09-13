@@ -34,18 +34,18 @@ $(document).ready(function() {
 
   test("objects: isElement",function(){
     ok(!_.isElement('div'), 'strings are not dom elements');
-    ok(_.isEqual($('html')[0]), 'the html tag is a DOM element');
+    ok(_.isElement($('html')[0]), 'the html tag is a DOM element');
   });
 
   test("objects: isArray",function(){
     ok(!_.isArray(arguments), 'the arguments object is not an array');
-    ok(_.isArray([1, 2, 3])), 'but arrays are');
+    ok(_.isArray([1, 2, 3]), 'but arrays are');
   });
 
   test("objects: isFunction",function(){
     ok(!_.isFunction([1, 2, 3]), 'arrays are not functions');
     ok(!_.isFunction('moe'), 'strings are not functions');
-    ok(_.isFunction(_.isFunction)), 'but functions are');
+    ok(_.isFunction(_.isFunction), 'but functions are');
   });
 
   test("objects: isUndefined",function(){
