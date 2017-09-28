@@ -186,7 +186,7 @@ window._ = {
     var low = 0, high = array.length;
     while (low < high) {
       var mid = (low + high) >> 1;
-      comparator(array[low], obj) < 0 ? low = mid + 1 : high = mid;
+      comparator(array[mid], obj) < 0 ? low = mid + 1 : high = mid;
     }
     return low;
   },
