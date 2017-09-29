@@ -32,38 +32,11 @@ window._ = {
     return obj;
   },
 
-  // Determine whether all of the elements match a truth test. Delegate to
-  // Javascript 1.6's every(), if it is present.
-  all: function(obj, iterator, context) {
-    iterator = iterator || function(v) {
-      return v;
-    };
-    if (obj.every) return obj.every(iterator, context);
-    var result = true;
-    _.each(obj, function(value, index) {
-      result = result && !!iterator.call(context, value, index);
-      if (!result) throw '__break__';
-    });
-    return result;
-  },
-
-  // Determine if at least one element in the object matches a truth test. Use
-  // Javascript 1.6's some(), if it exists.
-  any: function(obj, iterator, context) {
-    iterator = iterator || function(v) {
-      return v;
-    };
-    if (obj.some) return obj.some(iterator, context);
-    var result = false;
-    _.each(obj, function(value, index) {
-      if (result = !!iterator.call(context, value, index)) throw '__break__';
-    })
-  },
 
   // Return the results of applying the iterator to each element. Use Javascript
   // 1.6's version of map, if possible.
   map: function(obj, iterator, context) {
-    if (obj.map) return obj.map(iterator, context);
+    if (obj && obj.map) return obj.map(iterator, context);
     var results = [];
     _.each(obj, function(value, index) {
       results.push(iterator.call(context, value, index));
@@ -71,7 +44,8 @@ window._ = {
     return results;
   },
 
-  // Aka reduce. Inject builds up a single result from a list of values.
+  // Inject builds up a single result from a list of values. Also known as
+  // reduce, and foldl.
   inject: function(obj, memo, iterator, context) {
     _.each(obj, function(value, index) {
       memo = iterator.call(context, memo, value, index);
@@ -111,6 +85,34 @@ window._ = {
       }
     });
     return results;
+  },
+
+  // Determine whether all of the elements match a truth test. Delegate to
+  // Javascript 1.6's every(), if it is present.
+  all: function(obj, iterator, context) {
+    iterator = iterator || function(v) {
+      return v;
+    };
+    if (obj.every) return obj.every(iterator, context);
+    var result = true;
+    _.each(obj, function(value, index) {
+      result = result && !!iterator.call(context, value, index);
+      if (!result) throw '__break__';
+    });
+    return result;
+  },
+
+  // Determine if at least one element in the object matches a truth test. Use
+  // Javascript 1.6's some(), if it exists.
+  any: function(obj, iterator, context) {
+    iterator = iterator || function(v) {
+      return v;
+    };
+    if (obj.some) return obj.some(iterator, context);
+    var result = false;
+    _.each(obj, function(value, index) {
+      if (result = !!iterator.call(context, value, index)) throw '__break__';
+    })
   },
 
   // Determine if a given value is included in the object, based on '=='.
@@ -263,6 +265,18 @@ window._ = {
     });
   },
 
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  zip: function() {
+    var args = _.toArray(arguments);
+    var length = _.max(_.pluck(args, 'length'));
+    var results = new Array(length);
+    for (var i = 0; i < lenght; i++) {
+      results[i] = _.pluck(args, String(i));
+    }
+    return results;
+  },
+
   // If the browser doesn't supply us with indexOf, we might need this function.
   // Return the position of the first occurence of an item in an array,
   // or -1 if the item is not included in the array.
@@ -282,7 +296,7 @@ window._ = {
   /* ---------------- The following methods apply to objects ---------------- */
 
   // Create a function bound to a given object (assigning 'this', and arguments,
-  // optionally).
+  // optionally). Binding with arguments is also known as 'curry'.
   bind: function(func, context) {
     if (!context) {
       return func;
