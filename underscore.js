@@ -271,7 +271,7 @@ window._ = {
     var args = _.toArray(arguments);
     var length = _.max(_.pluck(args, 'length'));
     var results = new Array(length);
-    for (var i = 0; i < lenght; i++) {
+    for (var i = 0; i < length; i++) {
       results[i] = _.pluck(args, String(i));
     }
     return results;
