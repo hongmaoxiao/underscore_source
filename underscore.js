@@ -318,6 +318,31 @@ window._ = {
     });
   },
 
+  // Delays a function for the given number of milliseconds, and then calls
+  // it with the arguments supplied.
+  delay: function(func, wait) {
+    var args = _.toArray(arguments).slice(2);
+    return window.setTimeout(function() {
+      return func.apply(func, args);
+    }, wait);
+  },
+
+  // Defers a function, scheduling it to run after the current call stack has
+  // cleared.
+  defer: function(func) {
+    return _.delay.apply(_, [func, 1].concat(_.toArray(arguments).slice(1)));
+  },
+
+  // Returns the first function passed as an argument to the second,
+  // allowing you to adjust arguments, run code before and after, and
+  // conditionally execute the original function.
+  wrap: function(func, wrapper) {
+    return function() {
+      var args = [func].concat(_.toArray(arguments));
+      return wrapper.apply(wrapper, args);
+    };
+  },
+
   // Retrieve the names of an object's properties.
   keys: function(obj) {
     return _.pluck(obj, 'key');
