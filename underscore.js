@@ -1,6 +1,11 @@
-// Javascript can be so much more pleasant when it's functional -- re-implement
-// a bunch of utility methods from Prototype and Steele's Functional...
+// Underscore.js
+// (c) 2009 Jeremy Ashkenas, DocumentCloud Inc.
+// Underscore is freely distributable under the terms of the MIT license.
+// For all details and documentation:
+// http://fdjklsafjsdalk
 window._ = {
+
+    VERSION: '0.1.0',
 
     // The cornerstone, an each implementation.
     // Handles objects implementing forEach, _each, arrays, and raw objects.
@@ -195,7 +200,9 @@ window._ = {
     // Use a comparator function to figure out at what index an object should
     // be inserted so as to maintain order. Uses binary search.
     sortedIndex: function(array, obj, iterator) {
-      iterator = iterator || function(val) { return val; };
+        iterator = iterator || function(val) {
+            return val;
+        };
         var low = 0,
             high = array.length;
         while (low < high) {
@@ -270,12 +277,12 @@ window._ = {
 
     // Produce an array that contains every item shared between two given arrays.
     intersect: function(array) {
-      var rest = _.toArray(arguments).slice(1);
+        var rest = _.toArray(arguments).slice(1);
         return _.select(_.uniq(array), function(item1) {
             return _.all(rest, function(other) {
-              return _.detect(other, function(item2) {
-                return item1 === item2;
-              })
+                return _.detect(other, function(item2) {
+                    return item1 === item2;
+                })
             });
         });
     },
@@ -401,18 +408,19 @@ window._ = {
         if (a.isEqual) {
             return a.isEqual(b);
         }
+        // If a is not an object by this point, we can't handle it.
+        if (atype !== 'object') {
+            return false;
+        }
         // Nothing else worked, deep compare the contents.
-        return at === 'object' && _.isEqualContents(a, b);
-    },
-
-    // Objects have equal contents if they have the same keys, and all the values
-    // are equal (as defined by _.isEqual).
-    isEqualContents: function(a, b) {
         var aKeys = _.keys(a),
             bKeys = _.keys(b);
+
+        // Different object sizes?
         if (aKeys.length != bKeys.length) {
             return false;
         }
+        // Recursive comparison of contents.
         for (var key in a) {
             if (!_.isEqual(a[key], b[key])) {
                 return false;
@@ -439,11 +447,6 @@ window._ = {
     // Is a given variable undefined?
     isUndefined: function(obj) {
         return typeof obj == 'undefined';
-    },
-
-    // Convert any value into printable string form.
-    toString: function(obj) {
-        return obj == null ? '' : String(obj);
     },
 
     // Generate a unique integer id (unique within the entire client session).
