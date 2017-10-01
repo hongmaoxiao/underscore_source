@@ -9,6 +9,8 @@ window._ = {
 
     VERSION: '0.1.0',
 
+    /*------------------------ Collection Functions: ---------------------------*/
+
     // The cornerstone, an each implementation.
     // Handles objects implementing forEach, each, arrays, and raw objects.
     each: function(obj, iterator, context) {
@@ -228,7 +230,7 @@ window._ = {
         return _.toArray(obj).length;
     },
 
-    //------------- The following methods only apply to arrays. -----------------
+    /*-------------------------- Array Functions: ------------------------------*/
 
     // Get the first element of an array.
     first: function(array) {
@@ -315,7 +317,7 @@ window._ = {
         return -1;
     },
 
-    /* ---------------- The following methods apply to objects ---------------- */
+    /* ----------------------- Function Functions: -----------------------------*/
 
     // Create a function bound to a given object (assigning 'this', and arguments,
     // optionally). Binding with arguments is also known as 'curry'.
@@ -364,6 +366,8 @@ window._ = {
             return wrapper.apply(wrapper, args);
         };
     },
+
+    /* ------------------------- Object Functions: ---------------------------- */
 
     // Retrieve the names of an object's properties.
     keys: function(obj) {
@@ -448,6 +452,8 @@ window._ = {
     isUndefined: function(obj) {
         return typeof obj == 'undefined';
     },
+
+    /* -------------------------- Utility Functions: -------------------------- */
 
     // Generate a unique integer id (unique within the entire client session).
     // Useful for temporary DOM ids.
