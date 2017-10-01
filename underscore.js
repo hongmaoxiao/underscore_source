@@ -399,9 +399,9 @@ window._ = {
             return true;
         }
         // Different types?
-        var at = typeof(a),
-            bt = typeof(b);
-        if (at != bt) {
+        var atype = typeof(a),
+            btype = typeof(b);
+        if (atype != btype) {
             return false;
         }
         // Basic equality test (watch out for coercions).
