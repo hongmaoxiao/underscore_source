@@ -1,8 +1,10 @@
 // Underscore.js
 // (c) 2009 Jeremy Ashkenas, DocumentCloud Inc.
 // Underscore is freely distributable under the terms of the MIT license.
+// Portions of Underscore are inspired by or borrowed from Prototype.js,
+// Oliver Steele's Functional, And John Resig's Micro-Templating.
 // For all details and documentation:
-// http://fdjklsafjsdalk
+// http://documentcloud.github.com/underscore/
 window._ = {
 
     VERSION: '0.1.0',
@@ -278,11 +280,9 @@ window._ = {
     // Produce an array that contains every item shared between two given arrays.
     intersect: function(array) {
         var rest = _.toArray(arguments).slice(1);
-        return _.select(_.uniq(array), function(item1) {
+        return _.select(_.uniq(array), function(item) {
             return _.all(rest, function(other) {
-                return _.detect(other, function(item2) {
-                    return item1 === item2;
-                })
+                return _.indexOf(other, item) >= 0;
             });
         });
     },
