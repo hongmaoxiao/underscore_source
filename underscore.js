@@ -110,7 +110,7 @@
     // Determine whether all of the elements match a truth test. Delegate to
     // Javascript 1.6's every(), if it is present.
     _.all = function(obj, iterator, context) {
-        iterator = iterator || identify;
+        iterator = iterator || identity;
         if (obj.every) return obj.every(iterator, context);
         var result = true;
         _.each(obj, function(value, index) {
@@ -122,7 +122,7 @@
     // Determine if at least one element in the object matches a truth test. Use
     // Javascript 1.6's some(), if it exists.
     _.any = function(obj, iterator, context) {
-        iterator = iterator || identify;
+        iterator = iterator || identity;
         if (obj.some) return obj.some(iterator, context);
         var result = false;
         _.each(obj, function(value, index) {
@@ -212,7 +212,7 @@
     // Use a comparator function to figure out at what index an object should
     // be inserted so as to maintain order. Uses binary search.
     _.sortedIndex = function(array, obj, iterator) {
-        iterator = iterator || identify;
+        iterator = iterator || identity;
         var low = 0,
             high = array.length;
         while (low < high) {
