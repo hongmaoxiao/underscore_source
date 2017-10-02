@@ -25,7 +25,7 @@
             if (obj.forEach) {
                 obj.forEach(iterator, context);
             } else if (obj.length) {
-                for (var i = 0; i < obj.length; i++) {
+                for (var i = 0, ii = obj.length; i < ii; i++) {
                     iterator.call(context, obj[i], i);
                 }
             } else if (obj.each) {
@@ -35,11 +35,13 @@
             } else {
                 var i = 0;
                 for (var key in obj) {
-                    var value = obj[key],
-                        pair = [key, value];
-                    pair.key = key;
-                    pair.value = value;
-                    iterator.call(context, pair, i++);
+                    if (obj.hasOwnProperty(key)) {
+                        var value = obj[key],
+                            pair = [key, value];
+                        pair.key = key;
+                        pair.value = value;
+                        iterator.call(context, pair, i++);
+                    }
                 }
             }
         } catch (e) {
@@ -87,7 +89,7 @@
         if (obj.filter) return obj.filter(iterator, context);
         var results = [];
         _.each(obj, function(value, index) {
-            if (iterator.call(context, value, index)) results.push(value);
+            iterator.call(context, value, index) && results.push(value);
         });
         return results;
     };
@@ -96,9 +98,7 @@
     _.reject = function(obj, iterator, context) {
         var results = [];
         _.each(obj, function(value, index) {
-            if (!iterator.call(context, value, index)) {
-                results.push(value);
-            }
+            !iterator.call(context, value, index) && results.push(value);
         });
         return results;
     };
@@ -106,14 +106,10 @@
     // Determine whether all of the elements match a truth test. Delegate to
     // Javascript 1.6's every(), if it is present.
     _.all = function(obj, iterator, context) {
-        iterator = iterator || function(v) {
-            return v;
-        };
         if (obj.every) return obj.every(iterator, context);
         var result = true;
         _.each(obj, function(value, index) {
-            result = result && !!iterator.call(context, value, index);
-            if (!result) throw '__break__';
+            if (!(result = result && iterator ? iterator.call(context, value, index) : value)) throw '__break__';
         });
         return result;
     };
@@ -121,13 +117,10 @@
     // Determine if at least one element in the object matches a truth test. Use
     // Javascript 1.6's some(), if it exists.
     _.any = function(obj, iterator, context) {
-        iterator = iterator || function(v) {
-            return v;
-        };
         if (obj.some) return obj.some(iterator, context);
         var result = false;
         _.each(obj, function(value, index) {
-            if (result = !!iterator.call(context, value, index)) throw '__break__';
+            if (result = iterator ? iterator.call(context, value, index) : value) throw '__break__';
         })
     };
 
@@ -136,8 +129,7 @@
         if (_.isArray(obj)) return _.indexOf(obj, target) != -1;
         var found = false;
         _.each(obj, function(pair) {
-            if (pair.value === target) {
-                found = true;
+            if (found = pair.value === target) {
                 throw '__break__';
             }
         });
@@ -166,13 +158,15 @@
         if (!iterator && _.isArray(obj)) {
             return Math.max.apply(Math, obj);
         }
-        var result;
+        var result = {
+            computed: -Infinity
+        };
         _.each(obj, function(value, index) {
             var computed = iterator ? iterator.call(context, value, index) : value;
-            if (result == null || computed >= result.computed) result = {
+            computed >= result.computed && (result = {
                 value: value,
                 computed: computed
-            };
+            });
         });
         return result.value;
     };
@@ -182,13 +176,15 @@
         if (!iterator && _.isArray(obj)) {
             return Math.min.apply(Math, obj);
         }
-        var result;
+        var result = {
+            computed: Infinity
+        };
         _.each(obj, function(value, index) {
             var computed = iterator ? iterator.call(context, value, index) : value;
-            if (result == null || computed < result.computed) result = {
+            computed < result.computed && (result = {
                 value: value,
                 computed: computed
-            };
+            });
         });
         return result.value;
     };
@@ -314,7 +310,7 @@
         if (array.indexOf) {
             return array.indexOf(item);
         }
-        for (var i = 0; i < array.length; i++) {
+        for (i = 0, ii = array.length; i < ii; i++) {
             if (array[i] === item) {
                 return i;
             }
@@ -328,7 +324,8 @@
         if (array.lastIndexOf) {
             return array.lastIndexOf(item);
         }
-        for (i = array.length - 1; i >= 0; i--) {
+        var i = array.length;
+        while (i--) {
             if (array[i] === item) {
                 return i;
             }
@@ -476,7 +473,7 @@
 
     // Is a given value a Function?
     _.isFunction = function(obj) {
-        return typeof obj == 'function';
+        return Object.prototype.toString.call(obj) == '[object Function]';
     };
 
     // Is a given variable undefined?
