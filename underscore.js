@@ -146,8 +146,9 @@
 
     // Invoke a method with arguments on every item in a collection.
     _.invoke = function(obj, method) {
-        return _.map(obj, function(value, key) {
-            return key;
+        var args = _.toArray(arguments).slice(2);
+        return _.map(obj, function(value) {
+            return (method ? value[method] : value).apply(value, args);
         });
     };
 
