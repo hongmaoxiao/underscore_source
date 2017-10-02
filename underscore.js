@@ -11,6 +11,10 @@
 
     var previousUnderscore = root._;
 
+    var identity = function(value) {
+        return value;
+    };
+
     var _ = root._ = {};
 
     _.VERSION = '0.2.0';
@@ -25,7 +29,7 @@
             if (obj.forEach) {
                 obj.forEach(iterator, context);
             } else if (obj.length) {
-                for (var i = 0, ii = obj.length; i < ii; i++) {
+                for (var i = 0, l = obj.length; i < l; i++) {
                     iterator.call(context, obj[i], i);
                 }
             } else if (obj.each) {
@@ -106,10 +110,11 @@
     // Determine whether all of the elements match a truth test. Delegate to
     // Javascript 1.6's every(), if it is present.
     _.all = function(obj, iterator, context) {
+        iterator = iterator || identify;
         if (obj.every) return obj.every(iterator, context);
         var result = true;
         _.each(obj, function(value, index) {
-            if (!(result = result && iterator ? iterator.call(context, value, index) : value)) throw '__break__';
+            if (!(result = result && iterator.call(context, value, index))) throw '__break__';
         });
         return result;
     };
@@ -117,10 +122,11 @@
     // Determine if at least one element in the object matches a truth test. Use
     // Javascript 1.6's some(), if it exists.
     _.any = function(obj, iterator, context) {
+        iterator = iterator || identify;
         if (obj.some) return obj.some(iterator, context);
         var result = false;
         _.each(obj, function(value, index) {
-            if (result = iterator ? iterator.call(context, value, index) : value) throw '__break__';
+            if (result = iterator.call(context, value, index)) throw '__break__';
         })
     };
 
@@ -206,9 +212,7 @@
     // Use a comparator function to figure out at what index an object should
     // be inserted so as to maintain order. Uses binary search.
     _.sortedIndex = function(array, obj, iterator) {
-        iterator = iterator || function(val) {
-            return val;
-        };
+        iterator = iterator || identify;
         var low = 0,
             high = array.length;
         while (low < high) {
@@ -310,7 +314,7 @@
         if (array.indexOf) {
             return array.indexOf(item);
         }
-        for (i = 0, ii = array.length; i < ii; i++) {
+        for (i = 0, l = array.length; i < l; i++) {
             if (array[i] === item) {
                 return i;
             }
@@ -525,7 +529,7 @@
     _.some = _.any;
 
     /*------------------------- Export for ServerJS ----------------------------*/
-    if (!_.isUndefined(exports)) {
+    if (typeof exports != 'undefined') {
         exports = _;
     }
 
