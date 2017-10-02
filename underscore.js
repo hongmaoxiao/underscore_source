@@ -24,7 +24,7 @@
     }
 
     // Current version.
-    _.VERSION = '0.3.2';
+    _.VERSION = '0.3.3';
 
     /*------------------------ Collection Functions: ---------------------------*/
 
