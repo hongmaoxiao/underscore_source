@@ -7,17 +7,26 @@
 // http://documentcloud.github.com/underscore/
 (function() {
 
-    var root = (typeof window != 'undefined') ? window : exports;
+    /*------------------------- Baseline setup ---------------------------------*/
+    // Are we running in CommonJS or in the browser?
+    var commonJS = (typeof window === 'undefined' && typeof exports !== 'undefined');
 
-    var previousUnderscore = root._;
+    // Save the previous value of the "_" variable.
+    var previousUnderscore = commonJS ? null : window._;
 
+    // Keep the identity function around for default iterators.
     var identity = function(value) {
         return value;
     };
 
-    var _ = root._ = {};
+    // Create a safe reference to the Underscore object for the functions below.
+    var _ = {};
 
-    _.VERSION = '0.2.0';
+    // Export the Underscore object for CommonJS, assign it globally otherwise.
+    commonJS ? _ = exports : window._ = _;
+
+    // Current version.
+    _.VERSION = '0.2.1';
 
     /*------------------------ Collection Functions: ---------------------------*/
 
@@ -490,7 +499,9 @@
     // Run Underscore.js in noConflict mode, returning the '_' variable to its
     // previous owner. Returns a reference to the Underscore object.
     _.noConflict = function() {
-        root._ = previousUnderscore;
+        if (!commonJS) {
+            window._ = previousUnderscore;
+        }
         return this;
     };
 
@@ -527,10 +538,5 @@
     _.filter = _.select;
     _.every = _.all;
     _.some = _.any;
-
-    /*------------------------- Export for ServerJS ----------------------------*/
-    if (typeof exports != 'undefined') {
-        exports = _;
-    }
 
 })();
