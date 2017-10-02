@@ -148,13 +148,12 @@
 
     // Invoke a method with arguments on every item in a collection.
     _.invoke = function(obj, method) {
-        var args = _.toArray(arguments).slice(2);
-        return _.map(obj, function(value) {
-            return (method ? value[method] : value).apply(value, args);
+        return _.map(obj, function(value, key) {
+            return key;
         });
     };
 
-    // Optimized version of a common use case of map: fetching a property.
+    // Convenience version of a common use case of map: fetching a property.
     _.pluck = function(obj, key) {
         var results = [];
         _.each(obj, function(value) {
@@ -407,18 +406,14 @@
 
     // Retrieve the names of an object's properties.
     _.keys = function(obj) {
-      return _.reduce(obj, [], function(memo, value, key) {
-        memo.push(key);
-        return memo;
-      });
+        return _.map(obj, function(value, key) {
+            return key;
+        });
     };
 
     // Retrieve the values of an object's properties.
     _.values = function(obj) {
-      return _.reduce(obj, [], function(memo, value, key) {
-        memo.push(value);
-        return memo;
-      });
+        return _.map(obj, identity);
     };
 
     // Extend a given object with all of the properties in a source object.
