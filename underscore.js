@@ -39,11 +39,11 @@
                 obj.forEach(iterator, context);
             } else if (obj.length) {
                 for (var i = 0, l = obj.length; i < l; i++) {
-                    iterator.call(context, obj[i], i);
+                    iterator.call(context, obj[i], i, obj);
                 }
             } else if (obj.each) {
                 obj.each(function(value) {
-                    iterator.call(context, value, index++);
+                    iterator.call(context, value, index++, obj);
                 });
             } else {
                 var i = 0;
@@ -53,7 +53,7 @@
                             pair = [key, value];
                         pair.key = key;
                         pair.value = value;
-                        iterator.call(context, pair, i++);
+                        iterator.call(context, pair, i++, obj);
                     }
                 }
             }
