@@ -17,9 +17,9 @@
 
     // If Underscore is called as a function, it returns a wrapped object that
     // can be used OO-style. This wrapper holds altered versions of all the
-    // underscore functions.
+    // underscore functions. Wrapped objects may be chained.
     var wrapper = function(obj) {
-        this.wrapped = obj;
+        this._wrapped = obj;
     };
 
     // Create a safe reference to the Underscore object for reference below.
@@ -33,7 +33,7 @@
     }
 
     // Current version.
-    _.VERSION = '0.3.3';
+    _.VERSION = '0.4.0';
 
     /*------------------------ Collection Functions: ---------------------------*/
 
@@ -531,8 +531,9 @@
 
     // Generate a unique integer id (unique within the entire client session).
     // Useful for temporary DOM ids.
+    var idCounter = 0;
     _.uniqueId = function(prefix) {
-        var id = this._idCounter = (this._idCounter || 0) + 1;
+        var id = idCounter++;
         return prefix ? prefix + id : id;
     };
 
@@ -544,7 +545,7 @@
                 functions.push(key);
             }
         }
-        return _.without(functions, 'VERSION', 'prototype', 'noConflict');
+        return _.without(functions, 'VERSION', 'prototype', 'noConflict').sort();
     };
     // Javascript templating a-la ERB, pilfered from John Resig's
     // "Secrets of the Javascript Ninja", page 83.
@@ -574,11 +575,26 @@
     _.some = _.any;
     _.methods = _.functions;
 
-    /*------------------- Add all Functions to the Wrapper: --------------------*/
+    /*------------------------ Setup the OOP Wrapper: --------------------------*/
+
+  // Add all of the Underscore functions to the wrapper object.
     _.each(_.functions(), function(name) {
         wrapper.prototype[name] = function() {
-          Array.prototype.unshift.call(arguments, this.wrapped);
-          return _[name].apply(_, arguments);
+            Array.prototype.unshift.call(arguments, this._wrapped);
+            var result = _[name].apply(_, arguments);
+            return this._chain ? _(result).chain() : result;
         }
     });
+
+  // Start chaining a wrapped Underscore object.
+  wrapper.prototype.chain = function() {
+    this._chain = true;
+    return this;
+  };
+
+  // Extracts the result from a wrapped and chained object.
+  wrapper.prototype.get = function() {
+    return this._wrapped;
+  };
+
 })();
