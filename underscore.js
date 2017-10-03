@@ -33,7 +33,7 @@
     }
 
     // Current version.
-    _.VERSION = '0.4.1';
+    _.VERSION = '0.4.2';
 
     /*------------------------ Collection Functions: ---------------------------*/
 
@@ -617,7 +617,7 @@
     };
 
     // Extracts the result from a wrapped and chained object.
-    wrapper.prototype.get = function() {
+    wrapper.prototype.value = function() {
         return this._wrapped;
     };
 
