@@ -102,7 +102,7 @@
         _.each(obj, function(value, index, list) {
             if (iterator.call(context, value, index, list)) {
                 result = value;
-                throw '__break__';
+                _.breakLoop();
             }
         });
         return result;
@@ -135,7 +135,7 @@
         if (obj.every) return obj.every(iterator, context);
         var result = true;
         _.each(obj, function(value, index, list) {
-            if (!(result = result && iterator.call(context, value, index, list))) throw '__break__';
+            if (!(result = result && iterator.call(context, value, index, list))) _.breakLoop();
         });
         return result;
     };
@@ -147,7 +147,7 @@
         if (obj.some) return obj.some(iterator, context);
         var result = false;
         _.each(obj, function(value, index, list) {
-            if (result = iterator.call(context, value, index, list)) throw '__break__';
+            if (result = iterator.call(context, value, index, list)) _.breakLoop();
         })
     };
 
@@ -157,7 +157,7 @@
         var found = false;
         _.each(obj, function(value) {
             if (found = value === target) {
-                throw '__break__';
+                _.breakLoop();
             }
         });
         return found;
@@ -526,6 +526,12 @@
     // Keep the identity function around for default iterators.
     _.identity = function(value) {
         return value;
+    };
+
+
+    // Break out of the middle of an iteration.
+    _.breakLoop = function() {
+        throw "__break__";
     };
 
     // Generate a unique integer id (unique within the entire client session).
