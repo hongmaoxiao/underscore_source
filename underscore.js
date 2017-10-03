@@ -36,7 +36,7 @@
     }
 
     // Current version.
-    _.VERSION = '0.4.2';
+    _.VERSION = '0.4.3';
 
     /*------------------------ Collection Functions: ---------------------------*/
 
@@ -471,6 +471,10 @@
         if (a.isEqual) {
             return a.isEqual(b);
         }
+        // Both are NaN?
+        if (_.isNumber(a) && _.isNumber(b) && isNaN(a) && isNaN(b)) {
+            return true;
+        }
         // If a is not an object by this point, we can't handle it.
         if (atype !== 'object') {
             return false;
@@ -510,6 +514,16 @@
     // Is a given value a Function?
     _.isFunction = function(obj) {
         return Object.prototype.toString.call(obj) == '[object Function]';
+    };
+
+    // Is a given value a String?
+    _.isString = Function(obj) {
+        return Object.prototype.toString.call(obj) == '[object String]';
+    };
+
+    // Is a given value a String?
+    _.isNumber = Function(obj) {
+        return Object.prototype.toString.call(obj) == '[object Number]';
     };
 
     // Is a given variable undefined?
