@@ -52,10 +52,10 @@
                     iterator.call(context, obj[i], i, obj);
                 }
             } else {
-                for (var key in obj) {
-                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                        iterator.call(context, obj[key], key, obj);
-                    }
+                var keys = _.keys(obj),
+                    l = keys.length;
+                for (var i = 0; i < l; i++) {
+                    iterator.call(context, obj[keys[i]], keys[i], obj);
                 }
             }
         } catch (e) {
@@ -464,9 +464,14 @@
 
     // Retrieve the names of an object's properties.
     _.keys = function(obj) {
-        return _.map(obj, function(value, key) {
-            return key;
-        });
+        if (_.isArray(obj)) {
+            return _.range(0, obj.length);
+        }
+        var keys = [];
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            keys.push(key);
+        }
+        return keys;
     };
 
     // Retrieve the values of an object's properties.
@@ -545,7 +550,7 @@
 
     // Is a given array or object empty?
     _.isEmpty = function(obj) {
-        return (_.isArray(obj) ? obj : _.values(obj)).length == 0;
+        return _.keys(obj).length == 0;
     };
 
     // Is a given value a DOM element?
@@ -608,13 +613,7 @@
 
     // Return a sorted list of the function names available in Underscore.
     _.functions = function() {
-        var functions = [];
-        for (var key in _) {
-            if (Object.prototype.hasOwnProperty.call(_, key)) {
-                functions.push(key);
-            }
-        }
-        return _.without(functions, 'VERSION', 'prototype', 'noConflict').sort();
+        return _.without(_.keys(_), 'VERSION', 'prototype', 'noConflict').sort();
     };
     // Javascript templating a-la ERB, pilfered from John Resig's
     // "Secrets of the Javascript Ninja", page 83.
