@@ -28,8 +28,12 @@
     }
 
     // Export the Underscore object for CommonJS.
-    if (typeof exports !== 'undefined') {
-        _ = exports;
+    if (module && typeof module.exports !== 'undefined') {
+        module.exports = _;
+    } else {
+        if (typeof exports !== 'undefined') {
+            _ = exports;
+        }
     }
 
     // Current version.
