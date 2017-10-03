@@ -38,6 +38,36 @@
     // Current version.
     _.VERSION = '0.4.5';
 
+  /*------------------------ Generator Functions: ----------------------------*/
+
+  // Generates an Array, containing an arithmetic progressions
+  // Analog of python's built-in function 'range'
+  _.range = function(start, stop, step) {
+    if (!stop) {
+      var stop = start;
+      start = 0;
+    }
+
+    if (!step) {
+      var step = 1;
+    }
+
+    var length = Math.ceil((stop - start) / step);
+
+    if (length < 0) {
+      return [];
+    }
+
+    var results = new Array(length);
+    var resIdx = 0;
+
+    for (var i = start; (start <= stop ? stop - i > 0 : i - stop > 0); i += step) {
+        results[resIdx++] = i;
+    }
+
+    return results;
+  };
+
     /*------------------------ Collection Functions: ---------------------------*/
 
     // The cornerstone, an each implementation.
