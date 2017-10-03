@@ -452,10 +452,11 @@
     _.compose = function() {
         var funcs = _.toArray(arguments);
         return function() {
+            var args = _.rest(arguments);
             for (var i = funcs.length - 1; i >= 0; i--) {
-                arguments = [funcs[i].apply(this, arguments)];
+                args = [funcs[i].apply(this, args)];
             }
-            return arguments[0];
+            return args[0];
         };
     };
 
