@@ -38,7 +38,7 @@
     /*------------------------ Collection Functions: ---------------------------*/
 
     // The cornerstone, an each implementation.
-    // Handles objects implementing forEach, each, arrays, and raw objects.
+    // Handles objects implementing forEach, arrays, and raw objects.
     _.each = function(obj, iterator, context) {
         var index = 0;
         try {
@@ -48,10 +48,6 @@
                 for (var i = 0, l = obj.length; i < l; i++) {
                     iterator.call(context, obj[i], i, obj);
                 }
-            } else if (obj.each) {
-                obj.each(function(value) {
-                    iterator.call(context, value, index++, obj);
-                });
             } else {
                 for (var key in obj) {
                     if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -577,7 +573,7 @@
 
     /*------------------------ Setup the OOP Wrapper: --------------------------*/
 
-  // Add all of the Underscore functions to the wrapper object.
+    // Add all of the Underscore functions to the wrapper object.
     _.each(_.functions(), function(name) {
         wrapper.prototype[name] = function() {
             Array.prototype.unshift.call(arguments, this._wrapped);
@@ -586,15 +582,15 @@
         }
     });
 
-  // Start chaining a wrapped Underscore object.
-  wrapper.prototype.chain = function() {
-    this._chain = true;
-    return this;
-  };
+    // Start chaining a wrapped Underscore object.
+    wrapper.prototype.chain = function() {
+        this._chain = true;
+        return this;
+    };
 
-  // Extracts the result from a wrapped and chained object.
-  wrapper.prototype.get = function() {
-    return this._wrapped;
-  };
+    // Extracts the result from a wrapped and chained object.
+    wrapper.prototype.get = function() {
+        return this._wrapped;
+    };
 
 })();
