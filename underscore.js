@@ -36,7 +36,7 @@
     }
 
     // Maintain a reference to the Object prototype for quick access.
-    var oproto = Object.prototype;
+    var objPro = Object.prototype;
 
     // Current version.
     _.VERSION = '0.4.7';
@@ -568,22 +568,22 @@
 
     // Is a given value a Function?
     _.isFunction = function(obj) {
-        return oproto.toString.call(obj) == '[object Function]';
+        return objPro.toString.call(obj) == '[object Function]';
     };
 
     // Is a given value a String?
     _.isString = function(obj) {
-        return oproto.toString.call(obj) == '[object String]';
+        return objPro.toString.call(obj) == '[object String]';
     };
 
     // Is a given value a String?
     _.isNumber = function(obj) {
-        return oproto.toString.call(obj) == '[object Number]';
+        return objPro.toString.call(obj) == '[object Number]';
     };
 
     // Is a given value a Date?
     _.isDate = function(obj) {
-        return oproto.toString.call(obj) == '[object Date]';
+        return objPro.toString.call(obj) == '[object Date]';
     };
 
     // Is the given value NaN -- this one is interesting. NaN != NaN, and
