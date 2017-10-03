@@ -360,6 +360,30 @@
         }
         return -1;
     };
+
+    // Returns everything but the first entry of the array. Conceptually the
+    // same as calling shift(), but doesn't mutate the array passed in.
+    _.tail = function(array) {
+        var tail = _.clone(array);
+        tail.shift();
+        return tail;
+    };
+
+    // Returns everything but the last entry of the array. Conceptually the
+    // same as calling pop(), but doesn't mutate the array passed in.
+    _.init = function(array) {
+        var init = _.clone(array);
+        init.pop();
+        return init;
+    };
+
+    // Returns a new array, with the entries or the passed-in array in reverse
+    // order.
+    _.reverse = function(array) {
+        var reverse = _.clone(array);
+        return reverse.reverse();
+    };
+
     /* ----------------------- Function Functions: -----------------------------*/
 
     // Create a function bound to a given object (assigning 'this', and arguments,
@@ -589,6 +613,7 @@
 
     /*------------------------------- Aliases ----------------------------------*/
 
+    _.head = _.first;
     _.forEach = _.each;
     _.foldl = _.inject = _.reduce;
     _.foldr = _.reduceRight;
