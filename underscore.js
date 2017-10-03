@@ -506,6 +506,10 @@
         if (a == b) {
             return true;
         }
+        // Check dates' integer values.
+        if (a instanceof Date && b instanceof Date) {
+            return a.getTime() === b.getTime();
+        }
         // One of them implements an isEqual()?
         if (a.isEqual) {
             return a.isEqual(b);
@@ -516,6 +520,10 @@
         }
         // If a is not an object by this point, we can't handle it.
         if (atype !== 'object') {
+            return false;
+        }
+        // Check for different array lengths before comparing contents.
+        if (!_.isUndefined(a.length) && a.length !== b.length) {
             return false;
         }
         // Nothing else worked, deep compare the contents.
