@@ -433,7 +433,7 @@
     // Defers a function, scheduling it to run after the current call stack has
     // cleared.
     _.defer = function(func) {
-        return _.delay.apply(_, [func, 1].concat(_.rest(arguments));
+        return _.delay.apply(_, [func, 1].concat(_.rest(arguments)));
     };
 
     // Returns the first function passed as an argument to the second,
@@ -555,12 +555,12 @@
     };
 
     // Is a given value a String?
-    _.isString = Function(obj) {
+    _.isString = function(obj) {
         return Object.prototype.toString.call(obj) == '[object String]';
     };
 
     // Is a given value a String?
-    _.isNumber = Function(obj) {
+    _.isNumber = function(obj) {
         return Object.prototype.toString.call(obj) == '[object Number]';
     };
 
