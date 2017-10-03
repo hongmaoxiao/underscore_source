@@ -491,6 +491,11 @@
         return true;
     };
 
+    // Is a given array or object empty?
+    _.isEmpty = function(obj) {
+        return (_.isArray(obj) ? obj : _.values(obj)).length == 0;
+    };
+
     // Is a given value a DOM element?
     _.isElement = function(obj) {
         return !!(obj && obj.nodeType == 1);
