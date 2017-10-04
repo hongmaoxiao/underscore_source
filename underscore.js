@@ -47,7 +47,7 @@
         try {
             if (obj.forEach) {
                 obj.forEach(iterator, context);
-            } else if (obj.length) {
+            } else if (obj.length || obj.length === 0) {
                 for (var i = 0, l = obj.length; i < l; i++) {
                     iterator.call(context, obj[i], i, obj);
                 }
