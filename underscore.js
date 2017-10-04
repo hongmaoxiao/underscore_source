@@ -264,9 +264,7 @@
         if (_.isArguments(iterable)) {
             return slice.call(iterable);
         }
-        return _.map(iterable, function(val) {
-            return val;
-        });
+        return _.values(iterable);
     };
 
     // Return the number of elements in an object.
