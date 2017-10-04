@@ -44,7 +44,7 @@
         propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
 
     // Current version.
-    _.VERSION = '0.5.7';
+    _.VERSION = '0.5.8';
 
     // ------------------------ Collection Functions: ---------------------------
 
@@ -55,7 +55,7 @@
         try {
             if (obj.forEach) {
                 obj.forEach(iterator, context);
-            } else if (_.isArray(obj) || _.isArguments(obj)) {
+            } else if (_.isNumber(obj.length)) {
                 for (var i = 0, l = obj.length; i < l; i++) {
                     iterator.call(context, obj[i], i, obj);
                 }
@@ -164,7 +164,9 @@
 
     // Determine if a given value is included in the object, based on '==='.
     _.include = function(obj, target) {
-        if (_.isArray(obj)) return _.indexOf(obj, target) != -1;
+        if (obj && _.isFunction(obj.indexOf)) {
+          return _.indexOf(obj, target) != -1;
+        }
         var found = false;
         _.each(obj, function(value) {
             if (found = value === target) {
