@@ -5,6 +5,7 @@
 // Oliver Steele's Functional, and John Resig's Micro-Templating.
 // For all details and documentation:
 // http://documentcloud.github.com/underscore/
+
 (function() {
 
     /*------------------------- Baseline setup ---------------------------------*/
@@ -35,9 +36,13 @@
         exports._ = _;
     }
 
-    // Create quick reference variables for speed access to Object.prototype.
-    var toString = Object.prototype.toString,
-        hasOwnProperty = Object.prototype.hasOwnProperty;
+    // Create quick reference variables for speed access to core prototypes.
+    var slice = Array.prototype.slice,
+        unshift = Array.prototype.unshift,
+        toString = Object.prototype.toString,
+        hasOwnProperty = Object.prototype.hasOwnProperty,
+        propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
+
     // Current version.
     _.VERSION = '0.5.0';
 
@@ -50,7 +55,7 @@
         try {
             if (obj.forEach) {
                 obj.forEach(iterator, context);
-            } else if (_.isNumber(obj.length)) {
+            } else if (_.isArray(obj) || _.isArguments(obj)) {
                 for (var i = 0, l = obj.length; i < l; i++) {
                     iterator.call(context, obj[i], i, obj);
                 }
@@ -77,7 +82,7 @@
             results.push(iterator.call(context, value, index, list));
         });
         return results;
-    };
+    };;
 
     // Reduce builds up a single result from a list of values. Also known as
     // inject, or foldl. Uses JavaScript 1.8's version of reduce, if possible.
@@ -256,6 +261,9 @@
             return iterable.toArray();
         }
         if (_.isArray(iterable)) return iterable;
+        if (_.isArguments(iterable)) {
+            return slice.call(iterable);
+        }
         return _.map(iterable, function(val) {
             return val;
         });
@@ -272,7 +280,7 @@
     // values in the array. Aliased as "head". The "guard" check allows it to work
     // with _.map.
     _.first = function(array, n, guard) {
-        return n && !guard ? Array.prototype.slice.call(array, 0, n) : array[0];
+        return n && !guard ? slice.call(array, 0, n) : array[0];
     };
 
     // Returns everything but the first entry of the array. Aliased as "tail".
@@ -280,7 +288,7 @@
     // the rest of the values in the array from that index onward. The "guard"
     //check allows it to work with _.map.
     _.rest = function(array, index, guard) {
-        return Array.prototype.slice.call(array, _.isUndefined(index) || guard ? 1 : index);
+        return slice.call(array, _.isUndefined(index) || guard ? 1 : index);
     };
 
     // Get the last element of an array.
@@ -491,6 +499,13 @@
         return _.map(obj, _.identity);
     };
 
+    // Return a sorted list of the function names available in Underscore.
+    _.functions = function(obj) {
+        return _.select(_.keys(obj), function(key) {
+            return _.isFunction(obj[key]);
+        }).sort();
+    };
+
     // Extend a given object with all of the properties in a source object.
     _.extend = function(destination, source) {
         for (var property in source) {
@@ -581,6 +596,11 @@
         return !!(obj && obj.nodeType == 1);
     };
 
+    // Is a given variable an arguments object?
+    _.isArguments = function(obj) {
+      return obj && _.isNumber(obj.length) && !_.isArray(obj) && !propertyIsEnumerable.call(obj, 'length');
+    };
+
     // Is the given value NaN -- this one is interesting. NaN != NaN, and
     // isNaN(undefined) == true, so we make sure it's a number first.
     _.isNaN = function(obj) {
@@ -640,12 +660,6 @@
         return prefix ? prefix + id : id;
     };
 
-    // Return a sorted list of the function names available in Underscore.
-    _.functions = function(obj) {
-        return _.select(_.keys(obj), function(key) {
-            return _.isFunction(obj[key]);
-        }).sort();
-    };
 
     // Javascript templating a-la ERB, pilfered from John Resig's
     // "Secrets of the Javascript Ninja", page 83.
@@ -686,7 +700,7 @@
 
     // Add all of the Underscore functions to the wrapper object.
     _.each(_.functions(_), function(name) {
-        var method = _[name], unshift = Array.prototype.unshift;
+        var method = _[name];
         wrapper.prototype[name] = function() {
             unshift.call(arguments, this._wrapped);
             return result(method.apply(_, arguments), this._chain);
