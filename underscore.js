@@ -35,9 +35,6 @@
         exports._ = _;
     }
 
-    // Maintain a reference to the Object prototype for quick access.
-    var objPro = Object.prototype;
-
     // Current version.
     _.VERSION = '0.4.7';
 
@@ -455,7 +452,7 @@
     _.compose = function() {
         var funcs = _.toArray(arguments);
         return function() {
-            var args = _.rest(arguments);
+            var args = _.toArray(arguments);
             for (var i = funcs.length - 1; i >= 0; i--) {
                 args = [funcs[i].apply(this, args)];
             }
@@ -471,8 +468,10 @@
             return _.range(0, obj.length);
         }
         var keys = [];
-        if (oproto.hasOwnProperty.call(obj, key)) {
-            keys.push(key);
+        for (var key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                keys.push(key);
+            }
         }
         return keys;
     };
@@ -514,24 +513,31 @@
         if (a == b) {
             return true;
         }
-        // Check dates' integer values.
-        if (_.isDate(a) && _.isDate(b)) {
-            return a.getTime() === b.getTime();
-        }
         // One of them implements an isEqual()?
         if (a.isEqual) {
             return a.isEqual(b);
         }
+        // Check dates' integer values.
+        if (_.isDate(a) && _.isDate(b)) {
+            return a.getTime() === b.getTime();
+        }
         // Both are NaN?
         if (_.isNaN(a) && _.isNaN(b)) {
             return true;
+        }
+        // Compare regular expressions.
+        if (_.isRegExp(a) && _.isRegExp(b)) {
+            return a.source === b.source &&
+                a.global === b.global &&
+                a.ignoreCase === b.ignoreCase &&
+                a.multiline === b.multiline;
         }
         // If a is not an object by this point, we can't handle it.
         if (atype !== 'object') {
             return false;
         }
         // Check for different array lengths before comparing contents.
-        if (!_.isUndefined(a.length) && a.length !== b.length) {
+        if (a.length && a.length !== b.length) {
             return false;
         }
         // Nothing else worked, deep compare the contents.
@@ -561,31 +567,6 @@
         return !!(obj && obj.nodeType == 1);
     };
 
-    // Is a given value a real Array?
-    _.isArray = function(obj) {
-        return oproto.toString.call(obj) == '[object Array]';
-    };
-
-    // Is a given value a Function?
-    _.isFunction = function(obj) {
-        return objPro.toString.call(obj) == '[object Function]';
-    };
-
-    // Is a given value a String?
-    _.isString = function(obj) {
-        return objPro.toString.call(obj) == '[object String]';
-    };
-
-    // Is a given value a String?
-    _.isNumber = function(obj) {
-        return objPro.toString.call(obj) == '[object Number]';
-    };
-
-    // Is a given value a Date?
-    _.isDate = function(obj) {
-        return objPro.toString.call(obj) == '[object Date]';
-    };
-
     // Is the given value NaN -- this one is interesting. NaN != NaN, and
     // isNaN(undefined) == true, so we make sure it's a number first.
     _.isNaN = function(obj) {
@@ -601,6 +582,14 @@
     _.isUndefined = function(obj) {
         return typeof obj == 'undefined';
     };
+
+    // Define the isArray, isDate, isFunction, isNumber, isRegExp, and
+    // isString functions based on their toString identifiers.
+    _.each(['Array', 'Date', 'Function', 'Number', 'RegExp', 'String'], function(type) {
+        _['is' + type] = function(obj) {
+            return Object.prototype.toString.call(obj) == '[object ' + type + ']';
+        }
+    });
 
     /* -------------------------- Utility Functions: -------------------------- */
 
