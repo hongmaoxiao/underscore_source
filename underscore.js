@@ -608,7 +608,7 @@
 
     // Is a given variable an arguments object?
     _.isArguments = function(obj) {
-        return obj && obj.callee && _.isNumber(obj.length) && !_.isArray(obj) && !propertyIsEnumerable.call(obj, 'length');
+        return obj && _.isNumber(obj.length) && !obj.concat && !obj.substr && !obj.apply && !_.isArray(obj) && !propertyIsEnumerable.call(obj, 'length');
     };
 
     // Is a given value a function?
