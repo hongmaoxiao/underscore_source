@@ -8,7 +8,7 @@
 
 (function() {
 
-    /*------------------------- Baseline setup ---------------------------------*/
+    // ------------------------- Baseline setup ---------------------------------
 
     // Establish the root object, "window" in the browser, or "global" on the server.
     var root = this;
@@ -44,9 +44,9 @@
         propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
 
     // Current version.
-    _.VERSION = '0.5.1';
+    _.VERSION = '0.5.2';
 
-    /*------------------------ Collection Functions: ---------------------------*/
+    // ------------------------ Collection Functions: ---------------------------
 
     // The cornerstone, an each implementation.
     // Handles objects implementing forEach, arrays, and raw objects.
@@ -274,7 +274,7 @@
         return _.toArray(obj).length;
     };
 
-    /*-------------------------- Array Functions: ------------------------------*/
+    // -------------------------- Array Functions: ------------------------------
 
     // Get the first element of an array. Passing "n" will return the first N
     // values in the array. Aliased as "head". The "guard" check allows it to work
@@ -415,7 +415,7 @@
         return results;
     };
 
-    /* ----------------------- Function Functions: -----------------------------*/
+    // ----------------------- Function Functions: ------------------------------
 
     // Create a function bound to a given object (assigning 'this', and arguments,
     // optionally). Binding with arguments is also known as 'curry'.
@@ -478,7 +478,7 @@
         };
     };
 
-    /* ------------------------- Object Functions: ---------------------------- */
+    // ------------------------- Object Functions: ------------------------------
 
     // Retrieve the names of an object's properties.
     _.keys = function(obj) {
@@ -654,7 +654,7 @@
         return typeof obj == 'undefined';
     };
 
-    /* -------------------------- Utility Functions: -------------------------- */
+    // -------------------------- Utility Functions: ----------------------------
 
     // Run Underscore.js in noConflict mode, returning the '_' variable to its
     // previous owner. Returns a reference to the Underscore object.
@@ -701,7 +701,7 @@
         return data ? fn(data) : fn;
     };
 
-    /*------------------------------- Aliases ----------------------------------*/
+    // ------------------------------- Aliases ----------------------------------
 
     _.forEach = _.each;
     _.foldl = _.inject = _.reduce;
@@ -713,7 +713,7 @@
     _.tail = _.rest;
     _.methods = _.functions;
 
-    /*------------------------ Setup the OOP Wrapper: --------------------------*/
+    // ------------------------ Setup the OOP Wrapper: --------------------------
 
     // Helper function to continue chaining intermediate results.
     var result = function(obj, chain) {
