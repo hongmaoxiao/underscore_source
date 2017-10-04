@@ -36,7 +36,7 @@
     }
 
     // Current version.
-    _.VERSION = '0.4.7';
+    _.VERSION = '0.5.0';
 
     /*------------------------ Collection Functions: ---------------------------*/
 
@@ -422,6 +422,7 @@
         _.each(funcs, function(f) {
             obj[f] = _.bind(obj[f], obj);
         });
+        return obj;
     };
 
     // Delays a function for the given number of milliseconds, and then calls
