@@ -48,6 +48,25 @@
     hasOwnProperty = Object.prototype.hasOwnProperty,
     propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
 
+  // All native implementations we hope to use are declared here,
+  // mostly Array.prototype methods.
+  //
+  // 'native' is on the long list of reserved words.
+  // Ok to use as a property name, though jsLint doesn't agree.
+  var Native = _['native'] = {
+    forEach: Array.prototype.forEach,
+    map: Array.prototype.map,
+    reduce: Array.prototype.reduce,
+    reduceRight: Array.prototype.reduceRight,
+    filter: Array.prototype.filter,
+    every: Array.prototype.every,
+    some: Array.prototype.some,
+    indexOf: Array.prototype.indexOf,
+    lastIndexOf: Array.prototype.lastIndexOf,
+    isArray: Array.prototype.isArray,
+    keys: Array.prototype.keys
+  };
+
   // Current version.
   _.VERSION = '0.5.8';
 
@@ -60,7 +79,7 @@
     _.forEach = function(obj, iterator, context) {
       var index = 0;
       try {
-        if (obj.forEach) {
+        if (obj.forEach === Native.forEach) {
           obj.forEach(iterator, context);
         } else if (_.isNumber(obj.length)) {
           for (var i = 0, l = obj.length; i < l; i++) {
@@ -83,7 +102,7 @@
   // Return the results of applying the iterator to each element.
   // Delegates to JavaScript 1.6's native map if available.
   _.map = function(obj, iterator, context) {
-    if (obj && _.isFunction(obj.map)) return obj.map(iterator, context);
+    if (obj.map === Native.map) return obj.map(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
       results.push(iterator.call(context, value, index, list));
@@ -95,7 +114,7 @@
   // inject, or foldl.
   // Delegates to JavaScript 1.8's native reduce if available.
   _.reduce = function(obj, memo, iterator, context) {
-    if (obj && _.isFunction(obj.reduce)) {
+    if (obj.reduce === Native.reduce) {
       return obj.reduce(_.bind(iterator, context), memo);
     }
     each(obj, function(value, index, list) {
@@ -107,7 +126,7 @@
   // The right-associative version of reduce, also known as foldr. Uses
   // Delegates to JavaScript 1.8's native reduceRight if available.
   _.reduceRight = function(obj, memo, iterator, context) {
-    if (obj && _.isFunction(obj.reduceRight)) {
+    if (obj.reduceRight === Native.reduceRight) {
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
     var reversed = _.clone(_.toArray(obj)).reverse();
@@ -129,7 +148,7 @@
   // Return all the elements that pass a truth test.
   // Delegates to JavaScript 1.6's native filter if available.
   _.filter = function(obj, iterator, context) {
-    if (obj && _.isFunction(obj.filter)) return obj.filter(iterator, context);
+    if (obj.filter === Native.filter) return obj.filter(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
       iterator.call(context, value, index, list) && results.push(value);
@@ -150,7 +169,7 @@
   // Delegates to JavaScript 1.6's native every if available.
   _.every = function(obj, iterator, context) {
     iterator = iterator || _.identity;
-    if (obj && _.isFunction(obj.every)) return obj.every(iterator, context);
+    if (obj.every === Native.every) return obj.every(iterator, context);
     var result = true;
     each(obj, function(value, index, list) {
       if (!(result = result && iterator.call(context, value, index, list))) _.breakLoop();
@@ -162,7 +181,7 @@
   // Delegates to JavaScript 1.6's native some if available.
   _.some = function(obj, iterator, context) {
     iterator = iterator || _.identity;
-    if (obj && _.isFunction(obj.some)) return obj.some(iterator, context);
+    if (obj.some === Native.some) return obj.some(iterator, context);
     var result = false;
     each(obj, function(value, index, list) {
       if (result = iterator.call(context, value, index, list)) _.breakLoop();
@@ -381,7 +400,7 @@
   // item in an array, or -1 if the item is not included in the array.
   // Delegates to JavaScript 1.8's native indexOf if available.
   _.indexOf = function(array, item) {
-    if (array.indexOf) {
+    if (array.indexOf === Native.indexOf) {
       return array.indexOf(item);
     }
     for (var i = 0, l = array.length; i < l; i++) {
@@ -394,7 +413,7 @@
 
   // Delegates to JavaScript 1.6's native lastIndexOf if available.
   _.lastIndexOf = function(array, item) {
-    if (array.lastIndexOf) {
+    if (array.lastIndexOf === Native.lastIndexOf) {
       return array.lastIndexOf(item);
     }
     var i = array.length;
@@ -503,7 +522,7 @@
 
   // Retrieve the names of an object's properties.
   // Delegates to ECMA5's native Object.keys
-  _.keys = Object.keys || function(obj) {
+  _.keys = Native.keys || function(obj) {
     if (_.isArray(obj)) {
       return _.range(0, obj.length);
     }
@@ -660,7 +679,7 @@
 
   // Is a given value an array?
   // Delegates to ECMA5's native Array.isArray
-  _.isArray = Array.isArray || function(obj) {
+  _.isArray = Native.isArray || function(obj) {
     return !!(obj && obj.concat && obj.unshift);
   };
 
