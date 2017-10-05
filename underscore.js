@@ -31,9 +31,9 @@
   // Create quick reference variables for speed access to core prototypes.
   var slice = ArrayProto.slice,
     unshift = ArrayProto.unshift,
-    toString = Object.prototype.toString,
-    hasOwnProperty = Object.prototype.hasOwnProperty,
-    propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
+    toString = ObjProto.toString,
+    hasOwnProperty = ObjProto.hasOwnProperty,
+    propertyIsEnumerable = ObjProto.propertyIsEnumerable;
 
   // All native implementations we hope to use are declared here.
   var nativeForEach = ArrayProto.forEach,
@@ -130,7 +130,7 @@
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
     var reversed = _.clone(_.toArray(obj)).reverse();
-    return reduce(obj, memo, iterator, context);
+    return reduce(reversed, memo, iterator, context);
   };
 
   // Return the first value which passes a truth test.
@@ -208,11 +208,9 @@
 
   // Convenience version of a common use case of map: fetching a property.
   _.pluck = function(obj, key) {
-    var results = [];
-    each(obj, function(value) {
-      results.push(value[key]);
+    return _.map(obj, function(value) {
+      return value[key];
     });
-    return results;
   };
 
   // Return the maximum item or (item-based computation).
@@ -767,15 +765,15 @@
 
   // ------------------------------- Aliases ----------------------------------
 
-  _.forEach = _.each;
-  _.foldl = _.inject = _.reduce;
-  _.foldr = _.reduceRight;
-  _.filter = _.select;
-  _.every = _.all;
-  _.some = _.any;
-  _.head = _.first;
-  _.tail = _.rest;
-  _.methods = _.functions;
+  _.each     = _.forEach;
+  _.foldl    = _.inject       = _.reduce;
+  _.foldr    = _.reduceRight;
+  _.select   = _.filter;
+  _.all      = _.every;
+  _.any      = _.some;
+  _.head     = _.first;
+  _.tail     = _.rest;
+  _.methods  = _.functions;
 
   // ------------------------ Setup the OOP Wrapper: --------------------------
 
