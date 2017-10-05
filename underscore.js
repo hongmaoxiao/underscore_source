@@ -36,6 +36,11 @@
     exports._ = _;
   }
 
+  // Quick regexp-escaping function, because JS doesn't have RegExp.escape().
+  var escapeRegExp = function(s) {
+    return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
+  };
+
   // Create quick reference variables for speed access to core prototypes.
   var slice = Array.prototype.slice,
     unshift = Array.prototype.unshift,
@@ -699,7 +704,7 @@
       'var p=[],print=function(){p.push.apply(p,arguments);};' +
       'with(obj){p.push(\'' +
       str.replace(/[\r\t\n]/g, " ")
-      .replace(new RegExp("'(?=[^" + c.end[0] + "]*" + c.end + ")", "g"), "\t")
+      .replace(new RegExp("'(?=[^" + c.end[0] + "]*" + escapeRegExp(c.end) + ")", "g"), "\t")
       .split("'").join("\\'")
       .split("\t").join("'")
       .replace(c.interpolate, "',$1,'")

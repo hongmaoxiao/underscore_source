@@ -42,6 +42,9 @@ $(document).ready(function() {
     var quoteTemplate = _.template("It's its, not it's");
     equals(quoteTemplate({}), "It's its, not it's");
 
+    var quoteInStatementAndBody = _.template("<% if(foo == 'bar'){ %>Statement quotes and 'quotes'.<% } %>");
+    equals(quoteInStatementAndBody({foo: "bar"}), "Statement quotes and 'quotes'.");
+
     _.templateSettings = {
       start       : '{{',
       end         : '}}',
@@ -54,6 +57,25 @@ $(document).ready(function() {
 
     var customQuote = _.template("It's its, not it's");
     equals(customQuote({}), "It's its, not it's");
+
+    var quoteInStatementAndBody = _.template("{{ if(foo == 'bar'){ }}Statement quotes and 'quotes'.{{ } }}");
+    equals(quoteInStatementAndBody({foo: "bar"}), "Statement quotes and 'quotes'.");
+
+    _.templateSettings = {
+      start       : '<?',
+      end         : '?>',
+      interpolate : /<\?=(.+?)\?>/g
+    };
+
+    var customWithSpecialChars = _.template("<ul><? for (key in people) { ?><li><?= people[key] ?></li><? } ?></ul>");
+    result = customWithSpecialChars({people : {moe : "Moe", larry : "Larry", curly : "Curly"}});
+    equals(result, "<ul><li>Moe</li><li>Larry</li><li>Curly</li></ul>", 'can run arbitrary javascript in templates');
+
+    var customWithSpecialCharsQuote = _.template("It's its, not it's");
+    equals(customWithSpecialCharsQuote({}), "It's its, not it's");
+
+    var quoteInStatementAndBody = _.template("<? if(foo == 'bar'){ ?>Statement quotes and 'quotes'.<? } ?>");
+    equals(quoteInStatementAndBody({foo: "bar"}), "Statement quotes and 'quotes'.");
 
     _.templateSettings = {
       start       : '{{',
