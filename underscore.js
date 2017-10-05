@@ -832,6 +832,7 @@
     };
   };
 
+  // For backwards compatability, init the OO wrapper
   _.initWrapper();
 })();
 
