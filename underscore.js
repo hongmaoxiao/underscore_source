@@ -189,7 +189,7 @@
 
   // Determine if a given value is included in the array or object using '==='.
   _.include = function(obj, target) {
-    if (obj && _.isFunction(obj.indexOf)) {
+    if (obj && obj.indexOf === nativeIndexOf) {
       return _.indexOf(obj, target) != -1;
     }
     return !!_.detect(obj, function(value) {
