@@ -76,28 +76,27 @@
   // The cornerstone, an each implementation.
   // Handles objects implementing forEach, arrays, and raw objects.
   // Delegates to JavaScript 1.6's native forEach if available.
-  var each =
-    _.forEach = function(obj, iterator, context) {
-      var index = 0;
-      try {
-        if (obj.forEach === nativeForEach) {
-          obj.forEach(iterator, context);
-        } else if (_.isNumber(obj.length)) {
-          for (var i = 0, l = obj.length; i < l; i++) {
-            iterator.call(context, obj[i], i, obj);
-          }
-        } else {
-          for (var key in obj) {
-            if (hasOwnProperty.call(obj, key)) {
-              iterator.call(context, obj[key], key, obj);
-            }
+  var each = _.forEach = function(obj, iterator, context) {
+    var index = 0;
+    try {
+      if (obj.forEach === nativeForEach) {
+        obj.forEach(iterator, context);
+      } else if (_.isNumber(obj.length)) {
+        for (var i = 0, l = obj.length; i < l; i++) {
+          iterator.call(context, obj[i], i, obj);
+        }
+      } else {
+        for (var key in obj) {
+          if (hasOwnProperty.call(obj, key)) {
+            iterator.call(context, obj[key], key, obj);
           }
         }
-      } catch (e) {
-        if (e != breaker) throw e;
       }
-      return obj;
-    };
+    } catch (e) {
+      if (e != breaker) throw e;
+    }
+    return obj;
+  };
 
 
   // Return the results of applying the iterator to each element.
@@ -638,7 +637,9 @@
       return obj.length === 0;
     }
     for (var key in obj) {
-      return false;
+      if (hasOwnProperty.call(obj, key)) {
+        return false;
+      }
     }
     return true;
   };
@@ -714,9 +715,7 @@
     return value;
   };
 
-  // run a function n times.
-  // looks good in wrapper form:
-  //    _(3).times(alert)
+  // Run a function n times.
   _.times = function(n, fn, context) {
     for (var i = 0; i < n; i++) {
       fn.call(context, i);
@@ -765,15 +764,15 @@
 
   // ------------------------------- Aliases ----------------------------------
 
-  _.each     = _.forEach;
-  _.foldl    = _.inject       = _.reduce;
-  _.foldr    = _.reduceRight;
-  _.select   = _.filter;
-  _.all      = _.every;
-  _.any      = _.some;
-  _.head     = _.first;
-  _.tail     = _.rest;
-  _.methods  = _.functions;
+  _.each = _.forEach;
+  _.foldl = _.inject = _.reduce;
+  _.foldr = _.reduceRight;
+  _.select = _.filter;
+  _.all = _.every;
+  _.any = _.some;
+  _.head = _.first;
+  _.tail = _.rest;
+  _.methods = _.functions;
 
   // ------------------------ Setup the OOP Wrapper: --------------------------
 
