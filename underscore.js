@@ -55,27 +55,28 @@
 
   // The cornerstone, an each implementation.
   // Handles objects implementing forEach, arrays, and raw objects.
-  _.each = function(obj, iterator, context) {
-    var index = 0;
-    try {
-      if (obj.forEach) {
-        obj.forEach(iterator, context);
-      } else if (_.isNumber(obj.length)) {
-        for (var i = 0, l = obj.length; i < l; i++) {
-          iterator.call(context, obj[i], i, obj);
+  var each =
+    _.each = function(obj, iterator, context) {
+      var index = 0;
+      try {
+        if (obj.forEach) {
+          obj.forEach(iterator, context);
+        } else if (_.isNumber(obj.length)) {
+          for (var i = 0, l = obj.length; i < l; i++) {
+            iterator.call(context, obj[i], i, obj);
+          }
+        } else {
+          var keys = _.keys(obj),
+            l = keys.length;
+          for (var i = 0; i < l; i++) {
+            iterator.call(context, obj[keys[i]], keys[i], obj);
+          }
         }
-      } else {
-        var keys = _.keys(obj),
-          l = keys.length;
-        for (var i = 0; i < l; i++) {
-          iterator.call(context, obj[keys[i]], keys[i], obj);
-        }
+      } catch (e) {
+        if (e != breaker) throw e;
       }
-    } catch (e) {
-      if (e != breaker) throw e;
-    }
-    return obj;
-  };
+      return obj;
+    };
 
 
   // Return the results of applying the iterator to each element. Use Javascript
@@ -83,7 +84,7 @@
   _.map = function(obj, iterator, context) {
     if (obj && _.isFunction(obj.map)) return obj.map(iterator, context);
     var results = [];
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       results.push(iterator.call(context, value, index, list));
     });
     return results;
@@ -95,7 +96,7 @@
     if (obj && _.isFunction(obj.reduce)) {
       return obj.reduce(_.bind(iterator, context), memo);
     }
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       memo = iterator.call(context, memo, value, index, list);
     });
     return memo;
@@ -108,14 +109,14 @@
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
     var reversed = _.clone(_.toArray(obj)).reverse();
-    _.each(reversed, function(value, index) {
+    each(reversed, function(value, index) {
       memo = iterator.call(context, memo, value, index, obj);
     });
   };
   // Return the first value which passes a truth test.
   _.detect = function(obj, iterator, context) {
     var result;
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       if (iterator.call(context, value, index, list)) {
         result = value;
         _.breakLoop();
@@ -129,7 +130,7 @@
   _.select = function(obj, iterator, context) {
     if (obj && _.isFunction(obj.filter)) return obj.filter(iterator, context);
     var results = [];
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       iterator.call(context, value, index, list) && results.push(value);
     });
     return results;
@@ -138,7 +139,7 @@
   // Return all the elements for which a truth test fails.
   _.reject = function(obj, iterator, context) {
     var results = [];
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       !iterator.call(context, value, index, list) && results.push(value);
     });
     return results;
@@ -150,7 +151,7 @@
     iterator = iterator || _.identity;
     if (obj && _.isFunction(obj.every)) return obj.every(iterator, context);
     var result = true;
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       if (!(result = result && iterator.call(context, value, index, list))) _.breakLoop();
     });
     return result;
@@ -162,7 +163,7 @@
     iterator = iterator || _.identity;
     if (obj && _.isFunction(obj.some)) return obj.some(iterator, context);
     var result = false;
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       if (result = iterator.call(context, value, index, list)) _.breakLoop();
     })
   };
@@ -173,7 +174,7 @@
       return _.indexOf(obj, target) != -1;
     }
     var found = false;
-    _.each(obj, function(value) {
+    each(obj, function(value) {
       if (found = value === target) {
         _.breakLoop();
       }
@@ -192,7 +193,7 @@
   // Convenience version of a common use case of map: fetching a property.
   _.pluck = function(obj, key) {
     var results = [];
-    _.each(obj, function(value) {
+    each(obj, function(value) {
       results.push(value[key]);
     });
     return results;
@@ -206,7 +207,7 @@
     var result = {
       computed: -Infinity
     };
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
       computed >= result.computed && (result = {
         value: value,
@@ -224,7 +225,7 @@
     var result = {
       computed: Infinity
     };
-    _.each(obj, function(value, index, list) {
+    each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
       computed < result.computed && (result = {
         value: value,
@@ -438,7 +439,7 @@
     if (funcs.length == 0) {
       funcs = _.functions(obj);
     }
-    _.each(funcs, function(f) {
+    each(funcs, function(f) {
       obj[f] = _.bind(obj[f], obj);
     });
     return obj;
@@ -716,7 +717,7 @@
 
   // ------------------------------- Aliases ----------------------------------
 
-  _.forEach = _.each;
+  _.forEach = each;
   _.foldl = _.inject = _.reduce;
   _.foldr = _.reduceRight;
   _.filter = _.select;
@@ -734,7 +735,7 @@
   };
 
   // Add all of the Underscore functions to the wrapper object.
-  _.each(_.functions(_), function(name) {
+  each(_.functions(_), function(name) {
     var method = _[name];
     wrapper.prototype[name] = function() {
       var args = _.toArray(arguments);
@@ -744,7 +745,7 @@
   });
 
   // Add all mutator Array functions to the wrapper.
-  _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
+  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
     var method = Array.prototype[name];
     wrapper.prototype[name] = function() {
       method.apply(this._wrapped, arguments);
@@ -753,7 +754,7 @@
   });
 
   // Add all accessor Array functions to the wrapper.
-  _.each(['concat', 'join', 'slice'], function(name) {
+  each(['concat', 'join', 'slice'], function(name) {
     var method = Array.prototype[name];
     wrapper.prototype[name] = function() {
       return result(method.apply(this._wrapped, arguments), this._chain);
