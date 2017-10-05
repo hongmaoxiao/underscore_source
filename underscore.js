@@ -277,6 +277,24 @@
     return _.toArray(obj).length;
   };
 
+  // Build a lookup map from a collection.
+  // Pay a little memory upfront to make searching a collection for a
+  // value faster later
+  // e.g:
+  //
+  //  var lookup = _.buildLookup([1,2,8])  // {1: true, 2: true, 8: true}
+  //  lookup[key]   // instead of: _.include(array, key)
+  //
+  // See example usage in #without
+  // By default sets the value to true, can pass in a value to use instead
+  _.buildLookup = function(obj, useValue) {
+    useValue = (useValue === undefined) ? true : useValue;
+    return _.reduce(obj, {}, function(memo, value) {
+      memo[value] = useValue;
+      return memo;
+    });
+  };
+
   // -------------------------- Array Functions: ------------------------------
 
   // Get the first element of an array. Passing "n" will return the first N
@@ -319,9 +337,9 @@
 
   // Return a version of the array that does not contain the specified value(s).
   _.without = function(array) {
-    var values = _.rest(arguments);
-    return _.select(array, function(value) {
-      return !_.include(values, value);
+    var lookup = _.buildLookup(_.rest(arguments));
+    return _.filter(array, function(value) {
+      return !lookup[value];
     });
   };
 
@@ -554,7 +572,7 @@
     var args = _.toArray(arguments),
       obj = (typeof args[0] === 'string') ? _ : args.shift(),
       fn = obj[args.shift()];
-    each(args, function(alias){
+    each(args, function(alias) {
       obj[alias] = fn;
     });
     return obj;
@@ -749,14 +767,14 @@
   // ------------------------------- Aliases ----------------------------------
 
   _.alias('forEach', 'each').
-    alias('reduce', 'foldl', 'inject').
-    alias('reduceRight', 'foldr').
-    alias('filter', 'select').
-    alias('every', 'all').
-    alias('some', 'any').
-    alias('first', 'head').
-    alias('rest', 'tail').
-    alias('functions', 'methods');
+  alias('reduce', 'foldl', 'inject').
+  alias('reduceRight', 'foldr').
+  alias('filter', 'select').
+  alias('every', 'all').
+  alias('some', 'any').
+  alias('first', 'head').
+  alias('rest', 'tail').
+  alias('functions', 'methods');
 
   // ------------------------ Setup the OOP Wrapper: --------------------------
 
