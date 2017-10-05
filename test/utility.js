@@ -29,6 +29,17 @@ $(document).ready(function() {
     while(i++ < 100) ids.push(_.uniqueId());
     equals(_.uniq(ids).length, ids.length, 'can generate a globally-unique stream of ids');
   });
+  
+  test("utility: times", function() {
+    var vals = [];
+    _.times(3, function (i) { vals.push(i); });
+    ok(_.isEqual(vals, [0,1,2]), "is 0 indexed");
+    //
+    vals = [];
+    _(3).times(function (i) { vals.push(i); });
+    ok(_.isEqual(vals, [0,1,2]), "works as a wrapper");
+  });
+  
 
   test("utility: template", function() {
     var basicTemplate = _.template("<%= thing %> is gettin' on my noives!");
@@ -42,9 +53,6 @@ $(document).ready(function() {
     var quoteTemplate = _.template("It's its, not it's");
     equals(quoteTemplate({}), "It's its, not it's");
 
-    var quoteInStatementAndBody = _.template("<% if(foo == 'bar'){ %>Statement quotes and 'quotes'.<% } %>");
-    equals(quoteInStatementAndBody({foo: "bar"}), "Statement quotes and 'quotes'.");
-
     _.templateSettings = {
       start       : '{{',
       end         : '}}',
@@ -57,25 +65,6 @@ $(document).ready(function() {
 
     var customQuote = _.template("It's its, not it's");
     equals(customQuote({}), "It's its, not it's");
-
-    var quoteInStatementAndBody = _.template("{{ if(foo == 'bar'){ }}Statement quotes and 'quotes'.{{ } }}");
-    equals(quoteInStatementAndBody({foo: "bar"}), "Statement quotes and 'quotes'.");
-
-    _.templateSettings = {
-      start       : '<?',
-      end         : '?>',
-      interpolate : /<\?=(.+?)\?>/g
-    };
-
-    var customWithSpecialChars = _.template("<ul><? for (key in people) { ?><li><?= people[key] ?></li><? } ?></ul>");
-    result = customWithSpecialChars({people : {moe : "Moe", larry : "Larry", curly : "Curly"}});
-    equals(result, "<ul><li>Moe</li><li>Larry</li><li>Curly</li></ul>", 'can run arbitrary javascript in templates');
-
-    var customWithSpecialCharsQuote = _.template("It's its, not it's");
-    equals(customWithSpecialCharsQuote({}), "It's its, not it's");
-
-    var quoteInStatementAndBody = _.template("<? if(foo == 'bar'){ ?>Statement quotes and 'quotes'.<? } ?>");
-    equals(quoteInStatementAndBody({foo: "bar"}), "Statement quotes and 'quotes'.");
 
     _.templateSettings = {
       start       : '{{',
