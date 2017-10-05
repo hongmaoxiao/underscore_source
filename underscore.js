@@ -19,6 +19,35 @@
   // Establish the object that gets thrown to break out of a loop iteration.
   var breaker = typeof StopIteration !== 'undefined' ? StopIteration : '__break__';
 
+  // Quick regexp-escaping function, because JS doesn't have RegExp.escape().
+  var escapeRegExp = function(s) {
+    return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
+  };
+
+  // Save bytes in the minified (but not gzipped) version:
+  var ArrayProto = Array.prototype,
+    ObjProto = Object.prototype;
+
+  // Create quick reference variables for speed access to core prototypes.
+  var slice = ArrayProto.slice,
+    unshift = ArrayProto.unshift,
+    toString = Object.prototype.toString,
+    hasOwnProperty = Object.prototype.hasOwnProperty,
+    propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+  // All native implementations we hope to use are declared here.
+  var nativeForEach = ArrayProto.forEach,
+    nativeMap = ArrayProto.map,
+    nativeReduce = ArrayProto.reduce,
+    nativeReduceRight = ArrayProto.reduceRight,
+    nativeFilter = ArrayProto.filter,
+    nativeEvery = ArrayProto.every,
+    nativeSome = ArrayProto.some,
+    nativeIndexOf = ArrayProto.indexOf,
+    nativeLastIndexOf = ArrayProto.lastIndexOf,
+    nativeIsArray = Array.isArray,
+    nativeKeys = Object.prototype.keys
+
   // Create a safe reference to the Underscore object for reference below.
   var _ = function(obj) {
     return _.buildWrapper(obj);
@@ -31,34 +60,6 @@
 
   // Export underscore to global scope.
   root._ = _;
-
-  // Save bytes in the minified (but not gzipped) version:
-  var ArrayPrototype = Array.prototype;
-
-  // Quick regexp-escaping function, because JS doesn't have RegExp.escape().
-  var escapeRegExp = function(s) {
-    return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
-  };
-
-  // Create quick reference variables for speed access to core prototypes.
-  var slice = ArrayPrototype.slice,
-    unshift = ArrayPrototype.unshift,
-    toString = Object.prototype.toString,
-    hasOwnProperty = Object.prototype.hasOwnProperty,
-    propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-  // All native implementations we hope to use are declared here.
-  var nativeForEach = ArrayPrototype.forEach,
-    nativeMap = ArrayPrototype.map,
-    nativeReduce = ArrayPrototype.reduce,
-    nativeReduceRight = ArrayPrototype.reduceRight,
-    nativeFilter = ArrayPrototype.filter,
-    nativeEvery = ArrayPrototype.every,
-    nativeSome = ArrayPrototype.some,
-    nativeIndexOf = ArrayPrototype.indexOf,
-    nativeLastIndexOf = ArrayPrototype.lastIndexOf,
-    nativeIsArray = Array.isArray,
-    nativeKeys = Object.prototype.keys
 
   // Current version.
   _.VERSION = '0.5.8';
@@ -813,7 +814,7 @@
 
     // Add all mutator Array functions to the wrapper.
     each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
-      var method = ArrayPrototype[name];
+      var method = ArrayProto[name];
       wrapper.prototype[name] = function() {
         method.apply(this._wrapped, arguments);
         return result(this._wrapped, this._chain);
@@ -822,7 +823,7 @@
 
     // Add all accessor Array functions to the wrapper.
     each(['concat', 'join', 'slice'], function(name) {
-      var method = ArrayPrototype[name];
+      var method = ArrayProto[name];
       wrapper.prototype[name] = function() {
         return result(method.apply(this._wrapped, arguments), this._chain);
       }
