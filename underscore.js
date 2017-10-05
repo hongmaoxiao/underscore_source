@@ -36,35 +36,36 @@
     exports._ = _;
   }
 
+  // Save bytes in the minified (but not gzipped) version:
+  var ArrayPrototype = Array.prototype;
+
   // Quick regexp-escaping function, because JS doesn't have RegExp.escape().
   var escapeRegExp = function(s) {
     return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
   };
 
   // Create quick reference variables for speed access to core prototypes.
-  var slice = Array.prototype.slice,
-    unshift = Array.prototype.unshift,
+  var slice = ArrayPrototype.slice,
+    unshift = ArrayPrototype.unshift,
     toString = Object.prototype.toString,
     hasOwnProperty = Object.prototype.hasOwnProperty,
     propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
 
-  // All native implementations we hope to use are declared here,
-  // mostly Array.prototype methods.
-  //
+  // All native implementations we hope to use are declared here.
   // 'native' is on the long list of reserved words.
   // Ok to use as a property name, though jsLint doesn't agree.
   var Native = _['native'] = {
-    forEach: Array.prototype.forEach,
-    map: Array.prototype.map,
-    reduce: Array.prototype.reduce,
-    reduceRight: Array.prototype.reduceRight,
-    filter: Array.prototype.filter,
-    every: Array.prototype.every,
-    some: Array.prototype.some,
-    indexOf: Array.prototype.indexOf,
-    lastIndexOf: Array.prototype.lastIndexOf,
-    isArray: Array.prototype.isArray,
-    keys: Array.prototype.keys
+    forEach: ArrayPrototype.forEach,
+    map: ArrayPrototype.map,
+    reduce: ArrayPrototype.reduce,
+    reduceRight: ArrayPrototype.reduceRight,
+    filter: ArrayPrototype.filter,
+    every: ArrayPrototype.every,
+    some: ArrayPrototype.some,
+    indexOf: ArrayPrototype.indexOf,
+    lastIndexOf: ArrayPrototype.lastIndexOf,
+    isArray: Array.isArray,
+    keys: Object.prototype.keys
   };
 
   // Current version.
@@ -823,7 +824,7 @@
 
   // Add all mutator Array functions to the wrapper.
   each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
-    var method = Array.prototype[name];
+    var method = ArrayPrototype[name];
     wrapper.prototype[name] = function() {
       method.apply(this._wrapped, arguments);
       return result(this._wrapped, this._chain);
@@ -832,7 +833,7 @@
 
   // Add all accessor Array functions to the wrapper.
   each(['concat', 'join', 'slice'], function(name) {
-    var method = Array.prototype[name];
+    var method = ArrayPrototype[name];
     wrapper.prototype[name] = function() {
       return result(method.apply(this._wrapped, arguments), this._chain);
     }
