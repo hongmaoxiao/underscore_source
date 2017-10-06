@@ -62,7 +62,7 @@
   root._ = _;
 
   // Current version.
-  _.VERSION = '1.0.3';
+  _.VERSION = '1.0.4';
 
   // ------------------------ Collection Functions: ---------------------------
 
@@ -452,6 +452,16 @@
       obj[f] = _.bind(obj[f], obj);
     });
     return obj;
+  };
+
+  // Memoize an expensive function by storing its results.
+  _.memoize = function(func, hasher) {
+    var memo = {};
+    hasher = hasher || _.identity;
+    return function() {
+      var key = hasher.apply(this, arguments);
+      return key in memo ? memo[key] : (memo[key] = func.apply(this, arguments));
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
