@@ -522,15 +522,18 @@
     }).sort();
   };
 
-  // Extend a given object with all of the properties in a source object.
-  _.extend = function(destination, source) {
-    for (var property in source) {
-      destination[property] = source[property];
-    }
-    return destination;
+  // Extend a given object with all the properties in passed-in object(s).
+  _.extend = function(obj) {
+    var prop;
+    each(_.rest(arguments), function(source) {
+      for (var prop in source) {
+        obj[prop] = source[prop];
+      }
+    });
+    return obj;
   };
 
-  // Create a (shallow-cloned) duplicate of an object.
+  // Create a (shallow-cloned) duplicate  f aow-bj ct.
   _.clone = function(obj) {
     if (_.isArray(obj)) {
       return obj.slice(0);
