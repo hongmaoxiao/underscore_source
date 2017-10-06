@@ -365,7 +365,6 @@
   _.zip = function() {
     var args = _.toArray(arguments);
     var length = _.max(_.pluck(args, 'length'));
-    var results = [];
     var results = new Array(length);
     for (var i = 0; i < length; i++) {
       results[i] = _.pluck(args, '' + i);
@@ -416,13 +415,13 @@
       var step = 1;
     }
 
-    var length = Math.ceil((stop - start) / step);
+    var len = Math.ceil((stop - start) / step);
 
-    if (length < 0) {
+    if (len < 0) {
       return [];
     }
 
-    var range = [];
+    var range = new Array(len);
     var resIdx = 0;
 
     for (var i = start;
