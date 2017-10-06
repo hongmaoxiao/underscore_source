@@ -761,7 +761,7 @@
       .replace(endMatch, "\t")
       .split("'").join("\\'")
       .split("\t").join("'")
-      .replace(c.interpolate, "',$1,'")
+         .replace(c.interpolate, "',$1,'")
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "');}return p.join('');");
