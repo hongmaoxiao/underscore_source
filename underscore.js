@@ -120,7 +120,7 @@
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
-    var reversed = _.clone(_.toArray(obj)).reverse();
+    var reversed = (_.isArray(obj) ? obj.slice() : _.toArray(obj)).reverse();
     return _.reduce(reversed, iterator, memo, context);
   };
 
