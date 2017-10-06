@@ -96,10 +96,14 @@
       A complete <a href="test/test.html">Test &amp; Benchmark Suite</a>
       is included for your perusal.
     </p>
+    
+    <p>
+      You may also read through the <a href="docs/underscore.html">annotated source code</a>.
+    </p>
 
     <p>
-      The unabridged source code is
-      <a href="http://github.com/documentcloud/underscore/">available on GitHub</a>.
+      The project is
+      <a href="http://github.com/documentcloud/underscore/">hosted on GitHub</a>.
     </p>
 
     <p>
@@ -1065,17 +1069,15 @@ _.template(list, {people : ['moe', 'curly', 'larry']});
       <p>
         If ERB-style delimiters aren't your cup of tea, you can change Underscore's
         template settings to use different symbols to set off interpolated code.
-        Define <b>start</b> and <b>end</b> tokens, and an <b>interpolate</b> regex
-        to match expressions that should be evaluated and inserted. For example,
-        to perform
+        Define and an <b>interpolate</b> regex, and an (optional) <b>evaluate</b> regex
+        to match expressions that should be inserted and evaluated, respectively. 
+        For example, to perform
         <a href="http://github.com/janl/mustache.js#readme">Mustache.js</a>
         style templating:
       </p>
 
       <pre>
 _.templateSettings = {
-  start       : '{{',
-  end         : '}}',
   interpolate : /\{\{(.+?)\}\}/g
 };
 
