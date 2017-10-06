@@ -410,29 +410,18 @@
   // the native Python `range()` function. See
   // [the Python documentation](http://docs.python.org/library/functions.html#range).
   _.range = function(start, stop, step) {
-    if (!stop) {
-      var stop = start;
-      start = 0;
+    var args = slice.call(arguments),
+      solo = args.length <= 1,
+      start = solo ? 0 : args[0],
+      stop = solo ? args[0] : args[1],
+      step = args[2] || 1,
+      len = Math.max(Math.ceil((stop - start) / step), 0),
+      idx = 0,
+      range = new Array(len);
+    while(idx < len){
+      range[idx++] = start;
+      start+=step;
     }
-
-    if (!step) {
-      var step = 1;
-    }
-
-    var len = Math.ceil((stop - start) / step);
-
-    if (len < 0) {
-      return [];
-    }
-
-    var range = new Array(len);
-    var resIdx = 0;
-
-    for (var i = start;
-      (start <= stop ? stop - i > 0 : i - stop > 0); i += step) {
-      range[resIdx++] = i;
-    }
-
     return range;
   };
 
