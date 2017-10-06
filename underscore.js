@@ -161,7 +161,8 @@
 
   // Determine whether all of the elements match a truth test.
   // Delegates to **ECMAScript 5**'s native `every` if available.
-  _.every = function(obj, iterator, context) {
+  // Aliased as `all`.
+  _.every = _.all = function(obj, iterator, context) {
     iterator = iterator || _.identity;
     if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
     var result = true;
@@ -184,7 +185,8 @@
   };
 
   // Determine if a given value is included in the array or object using `===`.
-  _.include = function(obj, target) {
+  // Aliased as `contains`.
+  _.include = _.contains = function(obj, target) {
     if (obj && obj.indexOf === nativeIndexOf) {
       return _.indexOf(obj, target) != -1;
     }
@@ -354,8 +356,8 @@
   };
 
   // Produce an array that contains every item shared between two given arrays.
-  // passed-in arrays. Aliased as `contains`.
-  _.intersect = _.contains = function(array) {
+  // passed-in arrays.
+  _.intersect = function(array) {
     var rest = slice.call(arguments, 1);
     return _.filter(_.uniq(array), function(item) {
       return _.every(rest, function(other) {
