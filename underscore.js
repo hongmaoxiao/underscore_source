@@ -63,10 +63,10 @@
   // Collection Functions
   // --------------------
 
-  // The cornerstone, an `each` implementation.
+  // The cornerstone, an `each` implementation, aka `forEach`.
   // Handles objects implementing `forEach`, arrays, and raw objects.
   // Delegates to **ECMAScript 5**'s native `forEach` if available.
-  var each = _.forEach = function(obj, iterator, context) {
+  var each = _.each = _.forEach = function(obj, iterator, context) {
     try {
       if (nativeForEach && obj.forEach === nativeForEach) {
         obj.forEach(iterator, context);
@@ -101,7 +101,7 @@
 
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
-  _.reduce = function(obj, iterator, memo, context) {
+  _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
     if (nativeReduce && obj.reduce === nativeReduce) {
       if (context) {
         iterator = _.bind(iterator, context)
@@ -116,7 +116,7 @@
 
   // The right-associative version of reduce, also known as `foldr`. Uses
   // Delegates to **ECMAScript 5**'s native reduceRight if available.
-  _.reduceRight = function(obj, iterator, memo, context) {
+  _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
@@ -138,7 +138,8 @@
 
   // Return all the elements that pass a truth test.
   // Delegates to **ECMAScript 5**'s native `filter` if available.
-  _.filter = function(obj, iterator, context) {
+  // Aliased as `select`
+  _.filter = _.select = function(obj, iterator, context) {
     if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
@@ -172,7 +173,8 @@
 
   // Determine if at least one element in the object matches a truth test.
   // Delegates to **ECMAScript 5**'s native `some` if available.
-  _.some = function(obj, iterator, context) {
+  // Aliased as `any`.
+  _.some = _.any = function(obj, iterator, context) {
     iterator = iterator || _.identity;
     if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
     var result = false;
@@ -297,7 +299,7 @@
   // Get the first element of an array. Passing **n** will return the first N
   // values in the array. Aliased as `head`. The **guard** check allows it to work
   // with `_.map`.
-  _.first = function(array, n, guard) {
+  _.first = _.head = function(array, n, guard) {
     return n && !guard ? slice.call(array, 0, n) : array[0];
   };
 
@@ -305,7 +307,7 @@
   // Especially useful on the arguments object. Passing an **index** will return
   // the rest of the values in the array from that index onward. The **guard**
   // check allows it to work with `_.map`.
-  _.rest = function(array, index, guard) {
+  _.rest = _.tail = function(array, index, guard) {
     return slice.call(array, _.isUndefined(index) || guard ? 1 : index);
   };
 
@@ -352,7 +354,8 @@
   };
 
   // Produce an array that contains every item shared between two given arrays.
-  _.intersect = function(array) {
+  // passed-in arrays. Aliased as `contains`.
+  _.intersect = _.contains = function(array) {
     var rest = slice.call(arguments, 1);
     return _.filter(_.uniq(array), function(item) {
       return _.every(rest, function(other) {
@@ -531,7 +534,8 @@
   };
 
   // Return a sorted list of the function names available on the object.
-  _.functions = function(obj) {
+  // Aliased as `methods`
+  _.functions = _.methods = function(obj) {
     return _.filter(_.keys(obj), function(key) {
       return _.isFunction(obj[key]);
     }).sort();
@@ -772,20 +776,6 @@
     var func = new Function('obj', tmpl);
     return data ? func(data) : func;
   };
-
-  // Aliases:
-  // --------
-
-  _.each = _.forEach;
-  _.foldl = _.inject = _.reduce;
-  _.foldr = _.reduceRight;
-  _.select = _.filter;
-  _.all = _.every;
-  _.any = _.some;
-  _.contains = _.include;
-  _.head = _.first;
-  _.tail = _.rest;
-  _.methods = _.functions;
 
   // The OOP Wrapper
   // ---------------
