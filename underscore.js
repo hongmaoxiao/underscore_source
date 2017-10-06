@@ -605,7 +605,7 @@
     }
     // Recursive comparison of contents.
     for (var key in a) {
-      if (!_.isEqual(a[key], b[key])) {
+      if (!(key in b) || !_.isEqual(a[key], b[key])) {
         return false;
       }
     }
