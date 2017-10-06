@@ -62,7 +62,7 @@
   root._ = _;
 
   // Current version.
-  _.VERSION = '1.0.0';
+  _.VERSION = '1.0.2';
 
   // ------------------------ Collection Functions: ---------------------------
 
@@ -633,12 +633,12 @@
   // Is a given value an array?
   // Delegates to ECMA5's native Array.isArray
   _.isArray = nativeIsArray || function(obj) {
-    return !!(obj && obj.concat && obj.unshift);
+    return !!(obj && obj.concat && obj.unshift && !obj.callee);
   };
 
   // Is a given variable an arguments object?
   _.isArguments = function(obj) {
-    return obj && _.isNumber(obj.length) && !obj.concat && !obj.substr && !obj.apply && !_.isArray(obj) && !propertyIsEnumerable.call(obj, 'length');
+    return obj && obj.callee;
   };
 
   // Is a given value a function?
