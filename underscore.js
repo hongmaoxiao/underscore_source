@@ -578,7 +578,7 @@
     }
     // Both are NaN?
     if (_.isNaN(a) && _.isNaN(b)) {
-      return true;
+      return false;
     }
     // Compare regular expressions.
     if (_.isRegExp(a) && _.isRegExp(b)) {
