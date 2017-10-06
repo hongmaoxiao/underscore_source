@@ -614,7 +614,7 @@
 
   // Is a given array or object empty?
   _.isEmpty = function(obj) {
-    if (_.isArray(obj)) {
+    if (_.isArray(obj) || _.isString(obj)) {
       return obj.length === 0;
     }
     for (var key in obj) {
