@@ -143,7 +143,7 @@
     var results = [];
     each(obj, function(value, index, list) {
       if (iterator.call(context, value, index, list)) {
-      results[results.length] = value;
+        results[results.length] = value;
       }
     });
     return results;
@@ -757,16 +757,16 @@
     var c = _.templateSettings;
     var endMatch = new RegExp("'(?=[^" + c.end.substr(0, 1) + "]*" + escapeRegExp(c.end) + ")", "g");
     var fn = new Function('obj',
-      'var p=[],print=function(){p.push.apply(p,arguments);};' +
-      'with(obj){p.push(\'' +
+      'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
+      'with(obj||{}){__p.push(\'' +
       str.replace(/[\r\t\n]/g, " ")
       .replace(endMatch, "\t")
       .split("'").join("\\'")
       .split("\t").join("'")
-         .replace(c.interpolate, "',$1,'")
+      .replace(c.interpolate, "',$1,'")
       .split(c.start).join("');")
-      .split(c.end).join("p.push('") +
-      "');}return p.join('');");
+      .split(c.end).join("__p.push('") +
+      "');}return __p.join('');");
     return data ? fn(data) : fn;
   };
 
