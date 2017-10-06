@@ -62,7 +62,7 @@
   root._ = _;
 
   // Current version.
-  _.VERSION = '1.0.4';
+  _.VERSION = '1.1.0';
 
   // ------------------------ Collection Functions: ---------------------------
 
@@ -104,9 +104,12 @@
 
   // Reduce builds up a single result from a list of values, aka inject, or foldl.
   // Delegates to JavaScript 1.8's native reduce if available.
-  _.reduce = function(obj, memo, iterator, context) {
+  _.reduce = function(obj, iterator, memo, context) {
     if (nativeReduce && obj.reduce === nativeReduce) {
-      return obj.reduce(_.bind(iterator, context), memo);
+      if (context) {
+        iterator = _.bind(iterator, context)
+      }
+      return obj.reduce(iterator, memo);
     }
     each(obj, function(value, index, list) {
       memo = iterator.call(context, memo, value, index, list);
@@ -116,12 +119,12 @@
 
   // The right-associative version of reduce, also known as foldr. Uses
   // Delegates to JavaScript 1.8's native reduceRight if available.
-  _.reduceRight = function(obj, memo, iterator, context) {
+  _.reduceRight = function(obj, iterator, memo, context) {
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
     var reversed = _.clone(_.toArray(obj)).reverse();
-    return _.reduce(reversed, memo, iterator, context);
+    return _.reduce(reversed, iterator, memo, context);
   };
 
   // Return the first value which passes a truth test.
@@ -322,13 +325,13 @@
 
   // Return a completely flattened version of an array.
   _.flatten = function(array) {
-    return _.reduce(array, [], function(memo, value) {
+    return _.reduce(array, function(memo, value) {
       if (_.isArray(value)) {
         return memo.concat(_.flatten(value));
       }
       memo[memo.length] = value;
       return memo;
-    });
+    }, []);
   };
 
   // Return a version of the array that does not contain the specified value(s).
@@ -342,12 +345,12 @@
   // Produce a duplicate-free version of the array. If the array has already
   // been sorted, you have the option of using a faster algorithm.
   _.uniq = function(array, isSorted) {
-    return _.reduce(array, [], function(memo, el, i) {
+    return _.reduce(array, function(memo, el, i) {
       if (0 == i || (isSorted === true ? _.last(memo) != el : !_.include(memo, el))) {
         memo[memo.length] = el;
       }
       return memo;
-    });
+    }, []);
   };
 
   // Produce an array that contains every item shared between two given arrays.
@@ -744,8 +747,8 @@
   // By default, Underscore uses ERB-style template delimiters, change the
   // following template settings to use alternative delimiters.
   _.templateSettings = {
-    evaluate    : /<%(.+?)%>/g,
-    interpolate : /<%=(.+?)%>/g
+    evaluate: /<%(.+?)%>/g,
+    interpolate: /<%=(.+?)%>/g
   };
 
   // JavaScript templating a-la ERB, pilfered from John Resig's
@@ -753,21 +756,21 @@
   // Single-quote fix from Rick Strahl's version.
   // With alterations for arbitrary delimiters, and to preserve whitespace.
   _.template = function(str, data) {
-    var c  = _.templateSettings;
+    var c = _.templateSettings;
     var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
       'with(obj||{}){__p.push(\'' +
       str.replace(/'/g, "\\'")
-         .replace(c.interpolate, function(match, code) {
-           return "'," + code.replace(/\\'/g, "'") + ",'";
-         })
-         .replace(c.evaluate || null, function(match, code) {
-           return "');" + code.replace(/\\'/g, "'")
-                              .replace(/[\r\n\t]/g, ' ') + "__p.push('";
-         })
-         .replace(/\r/g, '\\r')
-         .replace(/\n/g, '\\n')
-         .replace(/\t/g, '\\t')
-         + "');}return __p.join('');";
+      .replace(c.interpolate, function(match, code) {
+        return "'," + code.replace(/\\'/g, "'") + ",'";
+      })
+      .replace(c.evaluate || null, function(match, code) {
+        return "');" + code.replace(/\\'/g, "'")
+          .replace(/[\r\n\t]/g, ' ') + "__p.push('";
+      })
+      .replace(/\r/g, '\\r')
+      .replace(/\n/g, '\\n')
+      .replace(/\t/g, '\\t') +
+      "');}return __p.join('');";
     var func = new Function('obj', tmpl);
     return data ? func(data) : func;
   };
@@ -780,6 +783,7 @@
   _.select = _.filter;
   _.all = _.every;
   _.any = _.some;
+  _.contains = _.include;
   _.head = _.first;
   _.tail = _.rest;
   _.methods = _.functions;
