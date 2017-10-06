@@ -114,7 +114,7 @@
     return memo;
   };
 
-  // The right-associative version of reduce, also known as `foldr`. Uses
+  // The right-associative version of reduce, also known as `foldr`.
   // Delegates to **ECMAScript 5**'s native reduceRight if available.
   _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
@@ -124,8 +124,8 @@
     return _.reduce(reversed, iterator, memo, context);
   };
 
-  // Return the first value which passes a truth test.
-  _.detect = function(obj, iterator, context) {
+  // Return the first value which passes a truth test. Aliased as `detect`.
+  _.find = _.detect = function(obj, iterator, context) {
     var result;
     each(obj, function(value, index, list) {
       if (iterator.call(context, value, index, list)) {
@@ -138,7 +138,7 @@
 
   // Return all the elements that pass a truth test.
   // Delegates to **ECMAScript 5**'s native `filter` if available.
-  // Aliased as `select`
+  // Aliased as `select`.
   _.filter = _.select = function(obj, iterator, context) {
     if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
     var results = [];
