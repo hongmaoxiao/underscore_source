@@ -35,7 +35,7 @@
     hasOwnProperty = ObjProto.hasOwnProperty,
     propertyIsEnumerable = ObjProto.propertyIsEnumerable;
 
-  // All native implementations we hope to use are declared here.
+  // All ECMA5 native implementations we hope to use are declared here.
   var nativeForEach = ArrayProto.forEach,
     nativeMap = ArrayProto.map,
     nativeReduce = ArrayProto.reduce,
@@ -53,6 +53,15 @@
   // underscore functions. Wrapped objects may be chained.
   var wrapper = function(obj) {
     this._wrapped = obj;
+  };
+
+  // A method to easily add functions to the OOP wrapper.
+  var addToWrapper = function(name, func) {
+    wrapper.prototype[name] = function() {
+      var args = _.toArray(arguments);
+      unshift.call(args, this._wrapped);
+      return result(func.apply(_, args), this._chain);
+    }
   };
 
   // Create a safe reference to the Underscore object for reference below.
@@ -519,7 +528,7 @@
     return _.map(obj, _.identity);
   };
 
-  // Return a sorted list of the function names available in Underscore.
+  // Return a sorted list of the function names available on the object.
   _.functions = function(obj) {
     return _.select(_.keys(obj), function(key) {
       return _.isFunction(obj[key]);
@@ -709,6 +718,14 @@
     throw breaker;
   };
 
+  // Add your own custom functions to the Underscore object, ensuring that
+  // they're correctly added to the OOP wrapper as well.
+  _.mixin = function(obj) {
+    _.each(_.functions(obj), function(name) {
+      addToWrapper(name, _[name] = obj[name]);
+    });
+  };
+
   // Generate a unique integer id (unique within the entire client session).
   // Useful for temporary DOM ids.
   var idCounter = 0;
@@ -762,6 +779,9 @@
   var result = function(obj, chain) {
     return chain ? _(obj).chain() : obj;
   };
+
+  // Add all of the Underscore functions to the wrapper object.
+  _.mixin(_);
 
   // Add all of the Underscore functions to the wrapper object.
   each(_.functions(_), function(name) {
