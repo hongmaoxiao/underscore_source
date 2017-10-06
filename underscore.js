@@ -72,7 +72,7 @@
   var each = _.forEach = function(obj, iterator, context) {
     var index = 0;
     try {
-      if (obj.forEach === nativeForEach) {
+      if (nativeForEach && obj.forEach === nativeForEach) {
         obj.forEach(iterator, context);
       } else if (_.isNumber(obj.length)) {
         for (var i = 0, l = obj.length; i < l; i++) {
@@ -95,7 +95,7 @@
   // Return the results of applying the iterator to each element.
   // Delegates to JavaScript 1.6's native map if available.
   _.map = function(obj, iterator, context) {
-    if (obj.map === nativeMap) return obj.map(iterator, context);
+    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
       results.push(iterator.call(context, value, index, list));
@@ -106,7 +106,7 @@
   // Reduce builds up a single result from a list of values, aka inject, or foldl.
   // Delegates to JavaScript 1.8's native reduce if available.
   _.reduce = function(obj, memo, iterator, context) {
-    if (obj.reduce === nativeReduce) {
+    if (nativeReduce && obj.reduce === nativeReduce) {
       return obj.reduce(_.bind(iterator, context), memo);
     }
     each(obj, function(value, index, list) {
@@ -118,11 +118,11 @@
   // The right-associative version of reduce, also known as foldr. Uses
   // Delegates to JavaScript 1.8's native reduceRight if available.
   _.reduceRight = function(obj, memo, iterator, context) {
-    if (obj.reduceRight === nativeReduceRight) {
+    if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       return obj.reduceRight(_.bind(iterator, context), memo);
     }
     var reversed = _.clone(_.toArray(obj)).reverse();
-    return reduce(reversed, memo, iterator, context);
+    return _.reduce(reversed, memo, iterator, context);
   };
 
   // Return the first value which passes a truth test.
@@ -140,7 +140,7 @@
   // Return all the elements that pass a truth test.
   // Delegates to JavaScript 1.6's native filter if available.
   _.filter = function(obj, iterator, context) {
-    if (obj.filter === nativeFilter) return obj.filter(iterator, context);
+    if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
       iterator.call(context, value, index, list) && results.push(value);
@@ -161,7 +161,7 @@
   // Delegates to JavaScript 1.6's native every if available.
   _.every = function(obj, iterator, context) {
     iterator = iterator || _.identity;
-    if (obj.every === nativeEvery) return obj.every(iterator, context);
+    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
     var result = true;
     each(obj, function(value, index, list) {
       if (!(result = result && iterator.call(context, value, index, list))) _.breakLoop();
@@ -173,7 +173,7 @@
   // Delegates to JavaScript 1.6's native some if available.
   _.some = function(obj, iterator, context) {
     iterator = iterator || _.identity;
-    if (obj.some === nativeSome) return obj.some(iterator, context);
+    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
     var result = false;
     each(obj, function(value, index, list) {
       if (result = iterator.call(context, value, index, list)) _.breakLoop();
@@ -185,9 +185,13 @@
     if (obj && obj.indexOf === nativeIndexOf) {
       return _.indexOf(obj, target) != -1;
     }
-    return !!_.detect(obj, function(value) {
-      return value === target;
+    var found = false;
+    each(obj, function(value) {
+      if (found = value === target) {
+        _.breakLoop();
+      }
     });
+    return found;
   };
 
   // Invoke a method with arguments on every item in a collection.
@@ -310,7 +314,7 @@
 
   // Trim out all falsy values from an array.
   _.compact = function(array) {
-    return _.select(array, function(value) {
+    return _.filter(array, function(value) {
       return !!value;
     });
   };
@@ -348,8 +352,8 @@
   // Produce an array that contains every item shared between two given arrays.
   _.intersect = function(array) {
     var rest = _.rest(arguments);
-    return _.select(_.uniq(array), function(item) {
-      return _.all(rest, function(other) {
+    return _.filter(_.uniq(array), function(item) {
+      return _.every(rest, function(other) {
         return _.indexOf(other, item) >= 0;
       });
     });
@@ -372,7 +376,7 @@
   // item in an array, or -1 if the item is not included in the array.
   // Delegates to JavaScript 1.8's native indexOf if available.
   _.indexOf = function(array, item) {
-    if (array.indexOf === nativeIndexOf) {
+    if (nativeIndexOf && array.indexOf === nativeIndexOf) {
       return array.indexOf(item);
     }
     for (var i = 0, l = array.length; i < l; i++) {
@@ -385,7 +389,7 @@
 
   // Delegates to JavaScript 1.6's native lastIndexOf if available.
   _.lastIndexOf = function(array, item) {
-    if (array.lastIndexOf === nativeLastIndexOf) {
+    if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
       return array.lastIndexOf(item);
     }
     var i = array.length;
@@ -514,7 +518,7 @@
 
   // Return a sorted list of the function names available on the object.
   _.functions = function(obj) {
-    return _.select(_.keys(obj), function(key) {
+    return _.filter(_.keys(obj), function(key) {
       return _.isFunction(obj[key]);
     }).sort();
   };
@@ -705,7 +709,7 @@
   // Add your own custom functions to the Underscore object, ensuring that
   // they're correctly added to the OOP wrapper as well.
   _.mixin = function(obj) {
-    _.each(_.functions(obj), function(name) {
+    each(_.functions(obj), function(name) {
       addToWrapper(name, _[name] = obj[name]);
     });
   };
@@ -729,13 +733,15 @@
   // JavaScript templating a-la ERB, pilfered from John Resig's
   // "Secrets of the JavaScript Ninja", page 83.
   // Single-quote fix from Rick Strahl's version.
+  // With alterations for arbitrary delimiters.
   _.template = function(str, data) {
     var c = _.templateSettings;
+    var endMatch = new RegExp("'(?=[^" + c.end.substr(0, 1) + "]*" + escapeRegExp(c.end) + ")", "g");
     var fn = new Function('obj',
       'var p=[],print=function(){p.push.apply(p,arguments);};' +
       'with(obj){p.push(\'' +
       str.replace(/[\r\t\n]/g, " ")
-      .replace(new RegExp("'(?=[^" + c.end[0] + "]*" + escapeRegExp(c.end) + ")", "g"), "\t")
+      .replace(endMatch, "\t")
       .split("'").join("\\'")
       .split("\t").join("'")
       .replace(c.interpolate, "',$1,'")
