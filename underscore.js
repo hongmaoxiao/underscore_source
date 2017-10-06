@@ -744,8 +744,9 @@
   // By default, Underscore uses ERB-style template delimiters, change the
   // following template settings to use alternative delimiters.
   _.templateSettings = {
-    evaluate: /<%(.+?)%>/g,
-    interpolate: /<%=(.+?)%>/g
+    start       : '<%',
+    end         : '%>',
+    interpolate : /<%=(.+?)%>/g
   };
 
   // JavaScript templating a-la ERB, pilfered from John Resig's
@@ -753,23 +754,22 @@
   // Single-quote fix from Rick Strahl's version.
   // With alterations for arbitrary delimiters, and to preserve whitespace.
   _.template = function(str, data) {
-    var c = _.templateSettings;
-    var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
-      'with(obj||{}){__p.push(\'' +
-      str.replace(/'/g, "\\'")
-      .replace(c.interpolate, function(match, code) {
-        return "'," + code.replace(/\\'/g, "'") + ",'";
-      })
-      .replace(c.evaluate || null, function(match, code) {
-        return "');" + code.replace(/\\'/g, "'")
-          .replace(/[\r\n\t]/g, ' ') + "__p.push('";
-      })
-      .replace(/\r/g, '\\r')
-      .replace(/\n/g, '\\n')
-      .replace(/\t/g, '\\t') +
-      "');}return __p.join('');";
-    var func = new Function('obj', tmpl);
-    return data ? func(data) : func;
+    var c  = _.templateSettings;
+    var endMatch = new RegExp("'(?=[^"+c.end.substr(0, 1)+"]*"+escapeRegExp(c.end)+")","g");
+    var fn = new Function('obj',
+      'var p=[],print=function(){p.push.apply(p,arguments);};' +
+      'with(obj||{}){p.push(\'' +
+      str.replace(/\r/g, '\\r')
+         .replace(/\n/g, '\\n')
+         .replace(/\t/g, '\\t')
+         .replace(endMatch,"✄")
+         .split("'").join("\\'")
+         .split("✄").join("'")
+         .replace(c.interpolate, "',$1,'")
+         .split(c.start).join("');")
+         .split(c.end).join("p.push('")
+         + "');}return p.join('');");
+    return data ? fn(data) : fn;
   };
 
   // ------------------------------- Aliases ----------------------------------
