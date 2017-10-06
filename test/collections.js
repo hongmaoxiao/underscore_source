@@ -53,22 +53,22 @@ $(document).ready(function() {
   });
 
   test('collections: reduce', function() {
-    var sum = _.reduce([1, 2, 3], 0, function(sum, num){ return sum + num; });
+    var sum = _.reduce([1, 2, 3], function(sum, num){ return sum + num; }, 0);
     equals(sum, 6, 'can sum up an array');
 
     var context = {multiplier : 3};
-    sum = _.reduce([1, 2, 3], 0, function(sum, num){ return sum + num * this.multiplier; }, context);
+    sum = _.reduce([1, 2, 3], function(sum, num){ return sum + num * this.multiplier; }, 0, context);
     equals(sum, 18, 'can reduce with a context object');
 
-    sum = _.inject([1, 2, 3], 0, function(sum, num){ return sum + num; });
+    sum = _.inject([1, 2, 3], function(sum, num){ return sum + num; }, 0);
     equals(sum, 6, 'aliased as "inject"');
 
-    sum = _([1, 2, 3]).reduce(0, function(sum, num){ return sum + num; });
+    sum = _([1, 2, 3]).reduce(function(sum, num){ return sum + num; }, 0);
     equals(sum, 6, 'OO-style reduce');
   });
 
   test('collections: reduceRight', function() {
-    var list = _.foldr([1, 2, 3], '', function(memo, num){ return memo + num; });
+    var list = _.foldr([1, 2, 3], function(memo, num){ return memo + num; }, '');
     equals(list, '321', 'can perform right folds');
   });
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
   test('collections: include', function() {
     ok(_.include([1,2,3], 2), 'two is in the array');
     ok(!_.include([1,3,9], 2), 'two is not in the array');
-    ok(_.include({moe:1, larry:3, curly:9}, 3), '_.include on objects checks their values');
+    ok(_.contains({moe:1, larry:3, curly:9}, 3), '_.include on objects checks their values');
     ok(_([1,2,3]).include(2), 'OO-style include');
   });
 
