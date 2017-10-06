@@ -97,7 +97,7 @@
     if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
-      results.push(iterator.call(context, value, index, list));
+      results[results.length] = iterator.call(context, value, index, list);
     });
     return results;
   };;
@@ -142,7 +142,9 @@
     if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
     var results = [];
     each(obj, function(value, index, list) {
-      iterator.call(context, value, index, list) && results.push(value);
+      if (iterator.call(context, value, index, list)) {
+      results[results.length] = value;
+      }
     });
     return results;
   };
@@ -324,7 +326,7 @@
       if (_.isArray(value)) {
         return memo.concat(_.flatten(value));
       }
-      memo.push(value);
+      memo[memo.length] = value;
       return memo;
     });
   };
@@ -342,7 +344,7 @@
   _.uniq = function(array, isSorted) {
     return _.reduce(array, [], function(memo, el, i) {
       if (0 == i || (isSorted === true ? _.last(memo) != el : !_.include(memo, el))) {
-        memo.push(el);
+        memo[memo.length] = el;
       }
       return memo;
     });
@@ -363,9 +365,10 @@
   _.zip = function() {
     var args = _.toArray(arguments);
     var length = _.max(_.pluck(args, 'length'));
+    var results = [];
     var results = new Array(length);
     for (var i = 0; i < length; i++) {
-      results[i] = _.pluck(args, String(i));
+      results[i] = _.pluck(args, '' + i);
     }
     return results;
   };
@@ -419,15 +422,15 @@
       return [];
     }
 
-    var results = new Array(length);
+    var range = [];
     var resIdx = 0;
 
     for (var i = start;
       (start <= stop ? stop - i > 0 : i - stop > 0); i += step) {
-      results[resIdx++] = i;
+      range[resIdx++] = i;
     }
 
-    return results;
+    return range;
   };
 
   // ----------------------- Function Functions: ------------------------------
@@ -514,7 +517,7 @@
     var keys = [];
     for (var key in obj) {
       if (hasOwnProperty.call(obj, key)) {
-        keys.push(key);
+        keys[keys.length] = key;
       }
     }
     return keys;
