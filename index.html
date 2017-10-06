@@ -110,12 +110,12 @@
 
     <table>
       <tr>
-        <td><a href="underscore.js">Development Version (1.0.4)</a></td>
-        <td><i>24kb, Uncompressed with Comments</i></td>
+        <td><a href="underscore.js">Development Version (1.1.0)</a></td>
+        <td><i>25kb, Uncompressed with Comments</i></td>
       </tr>
       <tr>
-        <td><a href="underscore-min.js">Production Version (1.0.4)</a></td>
-        <td><i>2.9kb, Packed and Gzipped</i></td>
+        <td><a href="underscore-min.js">Production Version (1.1.0)</a></td>
+        <td><i>3kb, Packed and Gzipped</i></td>
       </tr>
     </table>
 
@@ -216,16 +216,16 @@ var lyrics = [
 _(lyrics).chain()
   .map(function(line) { return line.words.split(' '); })
   .flatten()
-  .reduce({}, function(counts, word) {
+  .reduce(function(counts, word) {
     counts[word] = (counts[word] || 0) + 1;
     return counts;
-}).value();
+}, {}).value();
 
 =&gt; {lumberjack : 2, all : 4, night : 2 ... }</pre>
 
       <p>
         In addition, the
-        <a href="https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Objects/Array">Array prototype's methods</a>
+        <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/prototype">Array prototype's methods</a>
         are proxied through the chained Underscore object, so you can slip a
         <tt>reverse</tt> or a <tt>push</tt> into your chain, and continue to
         modify the array.
@@ -247,21 +247,26 @@ _(lyrics).chain()
       </p>
       <pre>
 _.each([1, 2, 3], function(num){ alert(num); });
+=&gt; alerts each number in turn...
+_.each({one : 1, two : 2, three : 3}, function(num, key){ alert(num); });
 =&gt; alerts each number in turn...</pre>
 
       <p id="map">
         <b class="header">map</b><code>_.map(list, iterator, [context])</code>
         <br />
         Produces a new array of values by mapping each value in <b>list</b>
-        through a transformation function (<b>iterator</b>). If the native
-        <b>map</b> method exists, it will be used instead.
+        through a transformation function (<b>iterator</b>). If the native <b>map</b> method
+        exists, it will be used instead. If <b>list</b> is a JavaScript object,
+        <b>iterator</b>'s arguments will be <tt>(value, key, list)</tt>.
       </p>
       <pre>
-_.map([1, 2, 3], function(num){ return num * 3 });
+_.map([1, 2, 3], function(num){ return num * 3; });
+=&gt; [3, 6, 9]
+_.map({one : 1, two : 2, three : 3}, function(num, key){ return num * 3; });
 =&gt; [3, 6, 9]</pre>
 
       <p id="reduce">
-        <b class="header">reduce</b><code>_.reduce(list, memo, iterator, [context])</code>
+        <b class="header">reduce</b><code>_.reduce(list, iterator, memo, [context])</code>
         <span class="alias">Aliases: <b>inject, foldl</b></span>
         <br />
         Also known as <b>inject</b> and <b>foldl</b>, <b>reduce</b> boils down a
@@ -270,12 +275,12 @@ _.map([1, 2, 3], function(num){ return num * 3 });
         <b>iterator</b>.
       </p>
       <pre>
-var sum = _.reduce([1, 2, 3], 0, function(memo, num){ return memo + num });
+var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
 =&gt; 6
 </pre>
 
       <p id="reduceRight">
-        <b class="header">reduceRight</b><code>_.reduceRight(list, memo, iterator, [context])</code>
+        <b class="header">reduceRight</b><code>_.reduceRight(list, iterator, memo, [context])</code>
         <span class="alias">Alias: <b>foldr</b></span>
         <br />
         The right-associative version of <b>reduce</b>. Delegates to the
@@ -285,7 +290,7 @@ var sum = _.reduce([1, 2, 3], 0, function(memo, num){ return memo + num });
       </p>
       <pre>
 var list = [[0, 1], [2, 3], [4, 5]];
-var flat = _.reduceRight(list, [], function(a, b) { return a.concat(b); });
+var flat = _.reduceRight(list, function(a, b) { return a.concat(b); }, []);
 =&gt; [4, 5, 2, 3, 0, 1]
 </pre>
 
@@ -356,6 +361,7 @@ _.any([null, 0, 'yes', false]);
 
       <p id="include">
         <b class="header">include</b><code>_.include(list, value)</code>
+        <span class="alias">Alias: <b>contains</b></span>
         <br />
         Returns <i>true</i> if the <b>value</b> is present in the <b>list</b>, using
         <i>===</i> to test equality. Uses <b>indexOf</b> internally, if <b>list</b>
@@ -1128,6 +1134,13 @@ _([1, 2, 3]).value();
         The <a href="http://github.com/mirven/underscore.lua">source</a> is
         available on GitHub.
       </p>
+      
+      <p>
+        <a href="http://esa-matti.suuronen.org/projects/underscore.strings/">Underscore.strings</a>,
+        an Underscore extension that adds functions for string-manipulation: 
+        <tt>trim</tt>, <tt>startsWith</tt>, <tt>contains</tt>, <tt>capitalize</tt>,
+        <tt>reverse</tt>, <tt>sprintf</tt>, and more.
+      </p>
 
       <p>
         Ruby's <a href="http://ruby-doc.org/core/classes/Enumerable.html">Enumerable</a> module.
@@ -1151,9 +1164,19 @@ _([1, 2, 3]).value();
       <h2>Change Log</h2>
       
       <p>
+        <b class="header">1.1.0</b><br />
+        The method signature of <tt>_.reduce</tt> has been changed to match
+        the ECMAScript 5 signature, instead of the Ruby/Prototype.js version.
+        This is a backwards-incompatible change. <tt>_.template</tt> may now be
+        called with no arguments, and preserves whitespace. <tt>_.contains</tt>
+        is a new alias for <tt>_.include</tt>.
+      </p>
+      
+      <p>
         <b class="header">1.0.4</b><br />
-        Andri Möll contributed the <tt>_.memoize</tt> function, which can be
-        used to speed up expensive repeated computations by caching the results.
+        <a href="http://themoell.com/">Andri Möll</a> contributed the <tt>_.memoize</tt> 
+        function, which can be used to speed up expensive repeated computations 
+        by caching the results.
       </p>
       
       <p>
@@ -1248,7 +1271,8 @@ _([1, 2, 3]).value();
         <b class="header">0.5.1</b><br />
         Added an <tt>_.isArguments</tt> function. Lots of little safety checks
         and optimizations contributed by
-        <a href="http://github.com/iamnoah/">Noah Sloan</a> and Andri Möll.
+        <a href="http://github.com/iamnoah/">Noah Sloan</a> and 
+        <a href="http://themoell.com/">Andri Möll</a>.
       </p>
 
       <p>
