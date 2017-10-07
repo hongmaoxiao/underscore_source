@@ -49,13 +49,15 @@
     return new wrapper(obj);
   }
 
-  // Export the Underscore object for **CommonJS**.
-  if (typeof exports !== 'undefined') {
-    exports._ = _;
+  // Export the Underscore object for **CommonJS**, with backwards-compatibility
+  // for the old `require()` API. If we're not in CommonJS, add `_` to the
+  // global object.
+  if (typeof module !== 'undefined') {
+    module.exports = _;
+    _._ = _;
+  } else {
+    root._ = _;
   }
-
-  // Export Underscore to the global scope.
-  root._ = _;
 
   // Current version.
   _.VERSION = '1.1.2';
@@ -490,7 +492,8 @@
   var limit = function(func, wait, debounce) {
     var timeout;
     return function() {
-      var context = this, args = arguments;
+      var context = this,
+        args = arguments;
       var throttler = function() {
         timeout = null;
         func.apply(context, args);
@@ -793,7 +796,7 @@
     var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
       'with(obj||{}){__p.push(\'' +
       str.replace(/\\/g, '\\\\')
-         .replace(/'/g, "\\'")
+      .replace(/'/g, "\\'")
       .replace(c.interpolate, function(match, code) {
         return "'," + code.replace(/\\'/g, "'") + ",'";
       })
