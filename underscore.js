@@ -28,7 +28,6 @@
     unshift = ArrayProto.unshift,
     toString = ObjProto.toString,
     hasOwnProperty = ObjProto.hasOwnProperty,
-    propertyIsEnumerable = ObjProto.propertyIsEnumerable;
 
   // All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
