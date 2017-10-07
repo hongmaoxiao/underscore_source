@@ -122,7 +122,10 @@
   // Delegates to **ECMAScript 5**'s native reduceRight if available.
   _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
-      return obj.reduceRight(_.bind(iterator, context), memo);
+      if (context) {
+        iterator = _.bind(iterator, context)
+      }
+      return memo !== void 0 ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
     }
     var reversed = (_.isArray(obj) ? obj.slice() : _.toArray(obj)).reverse();
     return _.reduce(reversed, iterator, memo, context);
