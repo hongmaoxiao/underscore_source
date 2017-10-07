@@ -27,21 +27,21 @@
   var slice = ArrayProto.slice,
     unshift = ArrayProto.unshift,
     toString = ObjProto.toString,
-    hasOwnProperty = ObjProto.hasOwnProperty,
+    hasOwnProperty = ObjProto.hasOwnProperty;
 
-  // All **ECMAScript 5** native function implementations that we hope to use
-  // are declared here.
-  var nativeForEach = ArrayProto.forEach,
-    nativeMap = ArrayProto.map,
-    nativeReduce = ArrayProto.reduce,
-    nativeReduceRight = ArrayProto.reduceRight,
-    nativeFilter = ArrayProto.filter,
-    nativeEvery = ArrayProto.every,
-    nativeSome = ArrayProto.some,
-    nativeIndexOf = ArrayProto.indexOf,
-    nativeLastIndexOf = ArrayProto.lastIndexOf,
-    nativeIsArray = Array.isArray,
-    nativeKeys = Object.keys;
+    // All **ECMAScript 5** native function implementations that we hope to use
+    // are declared here.
+    var nativeForEach = ArrayProto.forEach,
+      nativeMap = ArrayProto.map,
+      nativeReduce = ArrayProto.reduce,
+      nativeReduceRight = ArrayProto.reduceRight,
+      nativeFilter = ArrayProto.filter,
+      nativeEvery = ArrayProto.every,
+      nativeSome = ArrayProto.some,
+      nativeIndexOf = ArrayProto.indexOf,
+      nativeLastIndexOf = ArrayProto.lastIndexOf,
+      nativeIsArray = Array.isArray,
+      nativeKeys = Object.keys;
 
   // Create a safe reference to the Underscore object for reference below.
   var _ = function(obj) {
@@ -105,10 +105,18 @@
       if (context) {
         iterator = _.bind(iterator, context)
       }
-      return obj.reduce(iterator, memo);
+      var args = [iterator];
+      if (memo !== undefined) {
+        args.push(memo);
+      }
+      return obj.reduce.apply(obj, args);
     }
     each(obj, function(value, index, list) {
-      memo = iterator.call(context, memo, value, index, list);
+      if (memo === undefined && index == 0) {
+        memo = value;
+      } else {
+        memo = iterator.call(context, memo, value, index, list);
+      }
     });
     return memo;
   };
@@ -420,9 +428,9 @@
       len = Math.max(Math.ceil((stop - start) / step), 0),
       idx = 0,
       range = new Array(len);
-    while(idx < len){
+    while (idx < len) {
       range[idx++] = start;
-      start+=step;
+      start += step;
     }
     return range;
   };
