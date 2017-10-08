@@ -70,6 +70,9 @@
   // Delegates to **ECMAScript 5**'s native `forEach` if available.
   var each = _.each = _.forEach = function(obj, iterator, context) {
     var value;
+    if (obj == null) {
+      return;
+    }
     if (nativeForEach && obj.forEach === nativeForEach) {
       obj.forEach(iterator, context);
     } else if (_.isNumber(obj.length)) {
@@ -93,8 +96,11 @@
   // Return the results of applying the iterator to each element.
   // Delegates to **ECMAScript 5**'s native `map` if available.
   _.map = function(obj, iterator, context) {
-    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
     var results = [];
+    if (obj == null) {
+      return results;
+    }
+    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
     each(obj, function(value, index, list) {
       results[results.length] = iterator.call(context, value, index, list);
     });
@@ -105,6 +111,9 @@
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
     var initial = memo !== void 0;
+    if (obj == null) {
+      obj = [];
+    }
     if (nativeReduce && obj.reduce === nativeReduce) {
       if (context) {
         iterator = _.bind(iterator, context)
@@ -114,16 +123,23 @@
     each(obj, function(value, index, list) {
       if (!initial && index == 0) {
         memo = value;
+        initial = true;
       } else {
         memo = iterator.call(context, memo, value, index, list);
       }
     });
+    if (!initial) {
+      throw new TypeError("Reduce of empty array with no initial value");
+    }
     return memo;
   };
 
   // The right-associative version of reduce, also known as `foldr`.
   // Delegates to **ECMAScript 5**'s native reduceRight if available.
   _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
+    if (obj == null) {
+      obj = [];
+    }
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       if (context) {
         iterator = _.bind(iterator, context)
@@ -152,6 +168,9 @@
   _.filter = _.select = function(obj, iterator, context) {
     if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
     var results = [];
+    if (obj == null) {
+      return results;
+    }
     each(obj, function(value, index, list) {
       if (iterator.call(context, value, index, list)) {
         results[results.length] = value;
@@ -174,8 +193,11 @@
   // Aliased as `all`.
   _.every = _.all = function(obj, iterator, context) {
     iterator = iterator || _.identity;
-    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
     var result = true;
+    if (obj == null) {
+      return results;
+    }
+    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
     each(obj, function(value, index, list) {
       if (!(result = result && iterator.call(context, value, index, list)))
         return breaker;
@@ -188,8 +210,11 @@
   // Aliased as `any`.
   var any = _.some = _.any = function(obj, iterator, context) {
     iterator = iterator || _.identity;
-    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
     var result = false;
+    if (obj == null) {
+      return result;
+    }
+    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
     each(obj, function(value, index, list) {
       if (result = iterator.call(context, value, index, list)) return breaker;
     })
@@ -198,10 +223,13 @@
   // Determine if a given value is included in the array or object using `===`.
   // Aliased as `contains`.
   _.include = _.contains = function(obj, target) {
+    var found = false;
+    if (obj == null) {
+      return found;
+    }
     if (obj && obj.indexOf === nativeIndexOf) {
       return _.indexOf(obj, target) != -1;
     }
-    var found = false;
     any(obj, function(value) {
       if (found = value === target) {
         return true;
@@ -395,6 +423,9 @@
   // item in an array, or -1 if the item is not included in the array.
   // Delegates to **ECMAScript 5**'s native `indexOf` if available.
   _.indexOf = function(array, item) {
+    if (array == null) {
+      return -1;
+    }
     if (nativeIndexOf && array.indexOf === nativeIndexOf) {
       return array.indexOf(item);
     }
@@ -408,6 +439,9 @@
 
   // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
   _.lastIndexOf = function(array, item) {
+    if (array == null) {
+      return -1;
+    }
     if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
       return array.lastIndexOf(item);
     }
@@ -620,7 +654,7 @@
     if ((!a && b) || (a && !b)) {
       return false;
     }
-    // Unwrap any wrapped objects
+    // Unwrap any wrapped objects.
     if (a && a._chain) {
       a = a.value();
     }
