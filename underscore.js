@@ -602,6 +602,13 @@
 
   // Perform a deep comparison to check if two objects are equal.
   _.isEqual = function(a, b) {
+    // Unwrap any wrapped objects
+    if (a && a._chain) {
+      a = a.value();
+    }
+    if (b && b._chain) {
+      b = b.value();
+    }
     // Check object _.identity.
     if (a === b) {
       return true;
