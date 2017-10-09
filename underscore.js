@@ -22,7 +22,8 @@
 
   // Save bytes in the minified (but not gzipped) version:
   var ArrayProto = Array.prototype,
-    ObjProto = Object.prototype;
+    ObjProto = Object.prototype,
+    FuncProto = Function.prototype;
 
   // Create quick reference variables for speed access to core prototypes.
   var slice = ArrayProto.slice,
@@ -42,7 +43,8 @@
     nativeIndexOf = ArrayProto.indexOf,
     nativeLastIndexOf = ArrayProto.lastIndexOf,
     nativeIsArray = Array.isArray,
-    nativeKeys = Object.keys;
+    nativeKeys = Object.keys,
+    nativeBind = FuncProto.bind;
 
   // Create a safe reference to the Underscore object for reference below.
   var _ = function(obj) {
@@ -486,6 +488,9 @@
   // optionally). Binding with arguments is also known as `curry`.
   _.bind = function(func, obj) {
     var args = slice.call(arguments, 2);
+    if (nativeBind && func.bind === nativeBind) {
+      return FuncProto.bind.apply(func, slice.call(arguments, 1));
+    }
     return function() {
       return func.apply(obj || {}, args.concat(slice.call(arguments)));
     };
