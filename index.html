@@ -167,7 +167,7 @@
       <b>Objects</b>
       <br />
       <span class="methods"><a href="#keys">keys</a>, <a href="#values">values</a>,
-      <a href="#functions">functions</a>, <a href="#extend">extend</a>, <a href="#clone">clone</a>, <a href="#tap">tap</a>,
+      <a href="#functions">functions</a>, <a href="#extend">extend</a>, <a href="#defaults">defaults</a>, <a href="#clone">clone</a>, <a href="#tap">tap</a>,
       <a href="#isEqual">isEqual</a>, <a href="#isEmpty">isEmpty</a>, <a href="#isElement">isElement</a>,
       <a href="#isArray">isArray</a>, <a href="#isArguments">isArguments</a>, <a href="#isFunction">isFunction</a>, <a href="#isString">isString</a>,
       <a href="#isNumber">isNumber</a>, <a href="#isBoolean">isBoolean</a>, <a href="#isDate">isDate</a>, <a href="#isRegExp">isRegExp</a>
@@ -817,6 +817,19 @@ _.extend({name : 'moe'}, {age : 50});
 =&gt; {name : 'moe', age : 50}
 </pre>
 
+      <p id="defaults">
+        <b class="header">defaults</b><code>_.defaults(object, *defaults)</code>
+        <br />
+        Fill in missing properties in <b>object</b> with default values from the
+        <b>defaults</b> objects. As soon as the property is filled, further defaults
+        will have no effect.
+      </p>
+      <pre>
+var iceCream = {flavor : "chocolate"};
+_.defaults(iceCream, {flavor : "vanilla", sprinkles : "lots"});
+=&gt; {flavor : "chocolate", sprinkles : "lots"}
+</pre>
+
       <p id="clone">
         <b class="header">clone</b><code>_.clone(object)</code>
         <br />
@@ -1083,6 +1096,16 @@ compiled({name : 'moe'});
 var list = "&lt;% _.each(people, function(name) { %&gt; &lt;li&gt;&lt;%= name %&gt;&lt;/li&gt; &lt;% }); %&gt;";
 _.template(list, {people : ['moe', 'curly', 'larry']});
 =&gt; "&lt;li&gt;moe&lt;/li&gt;&lt;li&gt;curly&lt;/li&gt;&lt;li&gt;larry&lt;/li&gt;"</pre>
+
+      <p>
+        You can also use <tt>print</tt> from within JavaScript code.  This is
+        sometimes more convenient than using <tt>&lt;%= ... %&gt;</tt>.
+      </p>
+      
+      <pre>
+var compiled = _.template("&lt;% print('Hello ' + epithet); %&gt;");
+compiled({epithet: "stooge"});
+=&gt; "Hello stooge."</pre>
 
       <p>
         If ERB-style delimiters aren't your cup of tea, you can change Underscore's
