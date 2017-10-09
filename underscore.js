@@ -305,8 +305,6 @@
 
   // Use a comparator function to figure out at what index an object should
   // be inserted so as to maintain order. Uses binary search.
-  // Unlike `_.sortedIndexOf`, this function returns the array at which an
-  // element *should* be inserted, not where it actually is.
   _.sortedIndex = function(array, obj, iterator) {
     iterator = iterator || _.identity;
     var low = 0,
@@ -316,14 +314,6 @@
       iterator(array[mid]) < iterator(obj) ? low = mid + 1 : high = mid;
     }
     return low;
-  };
-
-  // Similar to native `indexOf`, but assumes that the array being searched
-  // is already sorted, giving much faster performance on large arrays.
-  // Not to be confused with `_.sortedIndex`.
-  _.sortedIndexOf = function(array, obj) {
-    var i = _.sortedIndex(array, obj);
-    return array[i] === obj ? i : -1;
   };
 
   // Safely convert anything iterable into a real, live array.
@@ -428,13 +418,19 @@
     return results;
   };
 
-  // If the browser doesn't supply us with indexOf (I'm looking at you, MSIE),
+  // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),
   // we need this function. Return the position of the first occurrence of an
   // item in an array, or -1 if the item is not included in the array.
   // Delegates to **ECMAScript 5**'s native `indexOf` if available.
-  _.indexOf = function(array, item) {
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = function(array, item, isSorted) {
     if (array == null) {
       return -1;
+    }
+    if (isSorted) {
+      var i = _.sortedIndex(array, item);
+      return array[i] === item ? i : -1;
     }
     if (nativeIndexOf && array.indexOf === nativeIndexOf) {
       return array.indexOf(item);

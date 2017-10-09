@@ -445,7 +445,7 @@ _.sortBy([1, 2, 3, 4, 5, 6], function(num){ return Math.sin(num); });
         <b class="header">sortedIndex</b><code>_.sortedIndex(list, value, [iterator])</code>
         <br />
         Uses a binary search to determine the index at which the <b>value</b>
-        should be inserted into the <b>list</b> in order to maintain the <b>list</b>'s
+        <i>should</i> be inserted into the <b>list</b> in order to maintain the <b>list</b>'s
         sorted order. If an <b>iterator</b> is passed, it will be used to compute
         the sort ranking of each value.
       </p>
@@ -585,11 +585,13 @@ _.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
 </pre>
 
       <p id="indexOf">
-        <b class="header">indexOf</b><code>_.indexOf(array, value)</code>
+        <b class="header">indexOf</b><code>_.indexOf(array, value, [isSorted])</code>
         <br />
         Returns the index at which <b>value</b> can be found in the <b>array</b>,
         or <i>-1</i> if value is not present in the <b>array</b>. Uses the native
-        <b>indexOf</b> function unless it's missing.
+        <b>indexOf</b> function unless it's missing. If you're working with a 
+        large array, and you know that the array is already sorted, pass <tt>true</tt>
+        for <b>isSorted</b> to use a faster binary search.
       </p>
       <pre>
 _.indexOf([1, 2, 3], 2);
