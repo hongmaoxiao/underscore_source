@@ -2,8 +2,33 @@ $(document).ready(function() {
 
   module("Object functions (values, extend, isEqual, and so on...)");
 
+  function raises(block, expected, message) {
+    var pass = typeof block == 'function',
+    isRegExp = expected && Object.prototype.toString.call(expected) == '[object RegExp]',
+    isFunction = !isRegExp && typeof expected == 'function';
+    if (!isFunction && !isRegExp && message == null) {
+      message = expected;
+      expected = null;
+    }
+    if (pass) {
+      try {
+        block();
+        pass = false;
+      } catch (error) {
+        pass = expected == null || (isRegExp && expected.test(error)) || (isFunction && expected.call(null, error));
+      }
+    }
+    ok(pass, typeof message == 'string' && message || 'error');
+  }
+
   test("objects: keys", function() {
+    var exception = /TypeError/;
     equals(_.keys({one : 1, two : 2}).join(', '), 'one, two', 'can extract the keys from an object');
+    raises(function() { _.keys(null); }, exception, 'throws an error for `null` values');
+    raises(function() { _.keys(void 0); }, exception, 'throws an error for `undefined` values');
+    raises(function() { _.keys(1); }, exception, 'throws an error for number primitives');
+    raises(function() { _.keys('a'); }, exception, 'throws an error for string primitives');
+    raises(function() { _.keys(true); }, exception, 'throws an error for boolean primitives');
   });
 
   test("objects: values", function() {
@@ -24,6 +49,21 @@ $(document).ready(function() {
     ok(_.isEqual(result, {x:'x', a:'a', b:'b'}), 'can extend from multiple source objects');
     result = _.extend({x:'x'}, {a:'a', x:2}, {a:'b'});
     ok(_.isEqual(result, {x:2, a:'b'}), 'extending from multiple source objects last property trumps');
+  });
+
+  test("objects: defaults", function() {
+    var result;
+    var options = {zero: 0, one: 1, empty: "", nan: NaN, string: "string"};
+
+    _.defaults(options, {zero: 1, one: 10, twenty: 20});
+    equals(options.zero, 0, 'value exists');
+    equals(options.one, 1, 'value exists');
+    equals(options.twenty, 20, 'default applied');
+
+    _.defaults(options, {empty: "full"}, {nan: "nan"}, {word: "word"}, {word: "dog"});
+    equals(options.empty, "", 'value exists');
+    ok(_.isNaN(options.nan), "NaN isn't overridden");
+    equals(options.word, "word", 'new value is added, first one wins');
   });
 
   test("objects: clone", function() {
