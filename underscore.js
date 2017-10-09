@@ -567,12 +567,17 @@
     return limit(func, wait, true);
   };
 
-  // Runs a function only if it's never been run before.
+  // Returns a function that will be executed at most one time, no matter how
+  // often you call it. Useful for lazy initialization.
   _.once = function(func) {
-    if (_.indexOf(onceRunFunctions, func)) {
-      onceRunFunctions.push(func);
-      return func.apply(func, slice.call(arguments, 1));
-    }
+    var ran = false, memo;
+    return function() {
+      if (ran) {
+        return memo;
+      }
+      ran = true;
+      return memo = func.apply(this, arguments);
+    };
   };
 
   // Internal record of functions that have been run via `_.once`.

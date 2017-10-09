@@ -108,6 +108,14 @@ $(document).ready(function() {
     _.delay(function(){ ok(counter == 1, "incr was debounced"); start(); }, 220);
   });
 
+  test("functions: once", function() {
+    var num = 0;
+    var increment = _.once(function(){ num++; });
+    increment();
+    increment();
+    equals(num, 1);
+  });
+
   test("functions: wrap", function() {
     var greet = function(name){ return "hi: " + name; };
     var backwards = _.wrap(greet, function(func, name){ return func(name) + ' ' + name.split('').reverse().join(''); });
