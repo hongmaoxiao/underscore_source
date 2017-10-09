@@ -493,7 +493,7 @@
     }
     var args = slice.call(arguments, 2);
     return function() {
-      return func.apply(obj || {}, args.concat(slice.call(arguments)));
+      return func.apply(obj, args.concat(slice.call(arguments)));
     };
   };
 
