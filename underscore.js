@@ -490,7 +490,7 @@
   // We check for `func.bind` first, to fail fast when `func` is undefined.
   _.bind = function(func, obj) {
     if (func.bind === nativeBind && nativeBind) {
-      return func.bind.apply(func, slice.call(arguments, 1));
+      return nativeBind.apply(func, slice.call(arguments, 1));
     }
     var args = slice.call(arguments, 2);
     return function() {
