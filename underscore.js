@@ -189,6 +189,18 @@
     return results;
   };
 
+  // Returns a count of elements which pass a truth test.
+  _.count = function(obj, iterator, context) {
+    var count = 0;
+    iterator = iterator || _.identity;
+    each(obj, function(value, index, list) {
+      if (iterator.call(context, value, index, list)) {
+        count += 1;
+      }
+    });
+    return count;
+  };
+
   // Determine whether all of the elements match a truth test.
   // Delegates to **ECMAScript 5**'s native `every` if available.
   // Aliased as `all`.
@@ -571,7 +583,8 @@
   // Returns a function that will be executed at most one time, no matter how
   // often you call it. Useful for lazy initialization.
   _.once = function(func) {
-    var ran = false, memo;
+    var ran = false,
+      memo;
     return function() {
       if (ran) {
         return memo;
