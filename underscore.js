@@ -192,7 +192,7 @@
   // Returns a count of elements which pass a truth test.
   _.count = function(obj, iterator, context) {
     var count = 0;
-    iterator = iterator || _.identity;
+    iterator || (iterator = _.identity);
     each(obj, function(value, index, list) {
       if (iterator.call(context, value, index, list)) {
         count += 1;
@@ -205,7 +205,7 @@
   // Delegates to **ECMAScript 5**'s native `every` if available.
   // Aliased as `all`.
   _.every = _.all = function(obj, iterator, context) {
-    iterator = iterator || _.identity;
+    iterator || (iterator = _.identity);
     var result = true;
     if (obj == null) {
       return results;
@@ -222,7 +222,7 @@
   // Delegates to **ECMAScript 5**'s native `some` if available.
   // Aliased as `any`.
   var any = _.some = _.any = function(obj, iterator, context) {
-    iterator = iterator || _.identity;
+    iterator || (iterator = _.identity);
     var result = false;
     if (obj == null) {
       return result;
@@ -319,7 +319,7 @@
   // Use a comparator function to figure out at what index an object should
   // be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iterator) {
-    iterator = iterator || _.identity;
+    iterator || (iterator = _.identity);
     var low = 0,
       high = array.length;
     while (low < high) {
@@ -526,7 +526,7 @@
   // Memoize an expensive function by storing its results.
   _.memoize = function(func, hasher) {
     var memo = {};
-    hasher = hasher || _.identity;
+    hasher || (hasher = _.identity);
     return function() {
       var key = hasher.apply(this, arguments);
       return hasOwnProperty.call(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));
