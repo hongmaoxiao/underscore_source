@@ -653,7 +653,9 @@
     var prop;
     each(slice.call(arguments, 1), function(source) {
       for (var prop in source) {
-        obj[prop] = source[prop];
+        if (source[prop] !== void 0) {
+          obj[prop] = source[prop];
+        }
       }
     });
     return obj;
