@@ -303,6 +303,20 @@
     }), 'value');
   };
 
+  // Groups the object's values by a criterion produced by an iterator
+  _.groundBy = function(obj, iterator) {
+    var result = {};
+    each(obj, function(value) {
+      var key = iterator(value);
+      if (result.hasOwnProperty(key)) {
+        result[key].push(value);
+      } else {
+        result[key] = [value];
+      }
+    });
+    return result;
+  };
+
   // Use a comparator function to figure out at what index an object should
   // be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iterator) {
