@@ -58,7 +58,8 @@
     module.exports = _;
     _._ = _;
   } else {
-    root._ = _;
+    // Exported as a string, for Closure Compiler "advanced" mode.
+    root['_'] = _;
   }
 
   // Current version.
