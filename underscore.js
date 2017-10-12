@@ -78,7 +78,7 @@
       obj.forEach(iterator, context);
     } else if (_.isNumber(obj.length)) {
       for (var i = 0, l = obj.length; i < l; i++) {
-        if (iterator.call(context, obj[i], i, obj) === breaker) {
+        if (i in obj && iterator.call(context, obj[i], i, obj) === breaker) {
           return;
         }
       }
@@ -304,7 +304,7 @@
   };
 
   // Groups the object's values by a criterion produced by an iterator
-  _.groundBy = function(obj, iterator) {
+  _.groupBy = function(obj, iterator) {
     var result = {};
     each(obj, function(value, index) {
       var key = iterator(value, index);
