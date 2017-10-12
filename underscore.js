@@ -389,9 +389,7 @@
   // Return a version of the array that does not contain the specified value(s).
   _.without = function(array) {
     var values = slice.call(arguments, 1);
-    return _.select(array, function(value) {
-      return !_.include(values, value);
-    });
+    return _.difference(array, slice.call(arguments, 1));
   };
 
   // Produce a duplicate-free version of the array. If the array has already
@@ -406,14 +404,28 @@
     }, []);
   };
 
+  // Produce an array that contains the union: each distinct element from all of
+  // the passed-in arrays.
+  _.union = function() {
+    return _.uniq(_.flatten(arguments));
+  };
+
   // Produce an array that contains every item shared between two given arrays.
-  // passed-in arrays.
-  _.intersect = function(array) {
+  // passed-in arrays. (Aliased as "intersect" for back-compat.)
+  _.intersection = _.intersect = function(array) {
     var rest = slice.call(arguments, 1);
     return _.filter(_.uniq(array), function(item) {
       return _.every(rest, function(other) {
         return _.indexOf(other, item) >= 0;
       });
+    });
+  };
+
+  // Take the difference between one array and another.
+  // Only the elements present in just the first array will remain.
+  _.difference = function(array, other) {
+    return _.filter(array, function(value) {
+      return !_.include(values, value);
     });
   };
 
