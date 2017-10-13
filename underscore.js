@@ -112,7 +112,7 @@
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
-    var initial = arguments.length > 2;
+    var initial = memo !== void 0;
     if (obj == null) {
       obj = [];
     }
@@ -210,7 +210,7 @@
   // Delegates to **ECMAScript 5**'s native `some` if available.
   // Aliased as `any`.
   var any = _.some = _.any = function(obj, iterator, context) {
-    iterator || (iterator = _.identity);
+    iterator = iterator || _.identity;
     var result = false;
     if (obj == null) {
       return result;
@@ -428,7 +428,7 @@
   // Only the elements present in just the first array will remain.
   _.difference = function(array, other) {
     return _.filter(array, function(value) {
-      return !_.include(values, value);
+      return !_.include(other, value);
     });
   };
 
