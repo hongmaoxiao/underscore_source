@@ -401,7 +401,7 @@
   _.uniq = _.unique = function(array, isSorted, iterator) {
     var initial = iterator ? _.map(array, iterator) : array;
     var result = [];
-    return _.reduce(initial, function(memo, el, i) {
+    _.reduce(initial, function(memo, el, i) {
       if (0 == i || (isSorted === true ? _.last(memo) != el : !_.include(memo, el))) {
         memo[memo.length] = el;
         result[result.length] = array[i];
