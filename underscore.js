@@ -262,6 +262,9 @@
     if (!iterator && _.isArray(obj)) {
       return Math.max.apply(Math, obj);
     }
+    if (!iterator && _.isEmpty(obj)) {
+      return -Infinity;
+    }
     var result = {
       computed: -Infinity
     };
@@ -279,6 +282,9 @@
   _.min = function(obj, iterator, context) {
     if (!iterator && _.isArray(obj)) {
       return Math.min.apply(Math, obj);
+    }
+    if (!iterator && _.isEmpty(obj)) {
+      return Infinity;
     }
     var result = {
       computed: Infinity
