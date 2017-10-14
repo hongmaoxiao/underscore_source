@@ -760,7 +760,7 @@
       return a !== 0 || 1 / a == 1 / b;
     }
     // A strict comparison is necessary because `null == undefined`.
-    if (a == null || b == null) {
+    if ((a == null) || (b == null)) {
       return a === b;
     }
     // Unwrap any wrapped objects.
@@ -800,7 +800,7 @@
     var isNumberA = _.isNumber(a),
       isNumberB = _.isNumber(b);
     if (isNumberA || isNumberB) {
-      return isNumberA && isNumberB && +a === +b;
+      return isNumberA && isNumberB && +a == +b;
     }
     // Compare boolean objects by value. The value of `true` is 1; the value of `false` is 0.
     var isBooleanA = _.isBoolean(a),
@@ -829,6 +829,10 @@
     if (typeA != 'object') {
       return false;
     }
+    // Objects with different constructors are not equal.
+    if (a.constructor !== b.constructor) {
+      return false;
+    }
     // Assume equality for cyclic structures. The algorithm for detecting cyclic structures is
     // adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
     var length = stack.length;
@@ -843,41 +847,25 @@
     stack.push(a);
     var size = 0,
       result = true;
-    if (a.length === +a.length || b.length === +b.length) {
-      // Compare object lengths to determine if a deep comparison is necessary.
-      size = a.length;
-      result = size == b.length;
-      if (result) {
-        // Deep compare array-like object contents, ignoring non-numeric properties.
-        while (size--) {
-          // Ensure commutative equality for sparse arrays.
-          if (!(result = size in a == size in b && eq(a[size], b[size], stack))) {
-            break;
-          }
+    // Deep compare objects.
+    for (var key in a) {
+      if (hasOwnProperty.call(a, key)) {
+        // Count the expected number of properties.
+        size++;
+        // Deep compare each member.
+        if (!(result = hasOwnProperty.call(b, key) && eq(a[key], b[key], stack))) {
+          break;
         }
       }
-    } else {
-      // Deep compare objects.
-      for (var key in a) {
-        if (hasOwnProperty.call(a, key)) {
-          // Count the expected number of properties.
-          size++;
-          // Deep compare each member.
-          if (!(result = hasOwnProperty.call(b, key) && eq(a[key], b[key],
-              stack))) {
-            break;
-          }
+    }
+    // Ensure that both objects contain the same number of properties.
+    if (result) {
+      for (var key in b) {
+        if (hasOwnProperty.call(b, key) && !size--) {
+          break;
         }
       }
-      // Ensure that both objects contain the same number of properties.
-      if (result) {
-        for (var key in b) {
-          if (hasOwnProperty.call(b, key) && !size--) {
-            break;
-          }
-        }
-        result = !size;
-      }
+      result = !size;
     }
     // Remove the first object from the stack of traversed objects.
     stack.pop();
