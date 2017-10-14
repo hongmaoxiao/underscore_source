@@ -366,9 +366,11 @@
     return slice.call(array, (index == null) || guard ? 1 : index);
   };
 
-  // Get the last element of an array.
-  _.last = function(array) {
-    return array[array.length - 1];
+  // Get the last element of an array. Passing **n** will return the last N
+  // values in the array.
+  _.last = function(array, n, guard) {
+    return (n != null) && !guard ? slice.call(array, array.length - n) : array[array.length
+      - 1];
   };
 
   // Trim out all falsy values from an array.
