@@ -831,6 +831,10 @@
     if (typeA != 'object') {
       return false;
     }
+    // Arrays or Arraylikes with different lengths are not equal.
+    if (a.length !== b.length) {
+      return false;
+    }
     // Objects with different constructors are not equal.
     if (a.constructor !== b.constructor) {
       return false;
