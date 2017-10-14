@@ -301,7 +301,8 @@
 
   // Shuffle an array.
   _.shuffle = function(obj) {
-    var shuffled = [], rand;
+    var shuffled = [],
+      rand;
     each(obj, function(value, index, list) {
       if (index == 0) {
         shuffled[0] = value;
@@ -398,8 +399,8 @@
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array.
   _.last = function(array, n, guard) {
-    return (n != null) && !guard ? slice.call(array, array.length - n) : array[array.length
-      - 1];
+    return (n != null) && !guard ? slice.call(array, array.length - n) : array[array.length -
+      1];
   };
 
   // Trim out all falsy values from an array.
@@ -987,6 +988,11 @@
     }
   };
 
+  // Escape a string for HTML interpolation.
+  _.escape = function(string) {
+    return ('' + string).replace(/&(?!\w+;|#\d+;|#x[\da-f]+;)/gi, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;');
+  };
+
   // Add your own custom functions to the Underscore object, ensuring that
   // they're correctly added to the OOP wrapper as well.
   _.mixin = function(obj) {
@@ -1007,7 +1013,8 @@
   // following template settings to use alternative delimiters.
   _.templateSettings = {
     evaluate: /<%([\s\S]+?)%>/g,
-    interpolate: /<%=([\s\S]+?)%>/g
+    interpolate: /<%=([\s\S]+?)%>/g,
+    escape: /<%-([\s\S]+?)%>/g
   };
 
   // JavaScript micro-templating, similar to John Resig's implementation.
@@ -1019,6 +1026,9 @@
       'with(obj||{}){__p.push(\'' +
       str.replace(/\\/g, '\\\\')
       .replace(/'/g, "\\'")
+      .replace(c.escape, function(match, code) {
+        return "',_.escape(" + code.replace(/\\'/g, "'") + "),'";
+      })
       .replace(c.interpolate, function(match, code) {
         return "'," + code.replace(/\\'/g, "'") + ",'";
       })
