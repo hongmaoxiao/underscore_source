@@ -839,12 +839,12 @@
     if (a.constructor !== b.constructor) {
       return false;
     }
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic structures is
-    // adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
     var length = stack.length;
     while (length--) {
-      // Linear search. Performance is inversely proportional to the number of unique nested
-      // structures.
+      // Linear search. Performance is inversely proportional to the number of
+      // unique nested structures.
       if (stack[length] == a) {
         return true;
       }
