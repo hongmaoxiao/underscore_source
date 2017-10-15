@@ -94,7 +94,9 @@ $(document).ready(function() {
     var counter = 0;
     var incr = function(){ counter++; };
     var throttledIncr = _.throttle(incr, 100);
-    throttledIncr(); throttledIncr(); throttledIncr();
+    throttledIncr();
+    throttledIncr();
+    throttledIncr();
     setTimeout(throttledIncr, 70);
     setTimeout(throttledIncr, 120);
     setTimeout(throttledIncr, 140);

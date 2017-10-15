@@ -627,27 +627,25 @@
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time.
   _.throttle = function(func, wait) {
-    var timeout, context, args, throttling, finishThrottle;
-    finishThrottle = _.debounce(function() {
+    var context, args, timeout, throttling;
+   var whenDone = _.debounce(function() {
       throttling = false;
     }, wait);
     return function() {
       context = this,
         args = arguments;
-      var throttler = function() {
+      var later = function() {
         timeout = null;
         func.apply(context, args);
-        finishThrottle();
+        whenDone();
       };
       if (!timeout) {
-        timeout = setTimeout(throttler, wait);
+        timeout = setTimeout(later, wait);
       }
       if (!throttling) {
         func.apply(context, args);
       }
-      if (finishThrottle) {
-        finishThrottle();
-      }
+      whenDone();
       throttling = true;
     };
   };
@@ -660,12 +658,12 @@
     return function() {
       var context = this,
         args = arguments;
-      var throttler = function() {
+      var later = function() {
         timeout = null;
         func.apply(context, args);
       };
       clearTimeout(timeout);
-      timeout = setTimeout(throttler, wait);
+      timeout = setTimeout(later, wait);
     };
   };
 
