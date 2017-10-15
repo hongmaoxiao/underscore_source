@@ -630,7 +630,7 @@
     var timeout, context, args, throttling, finishThrottle;
     finishThrottle = _.debounce(function() {
       throttling = false;
-    });
+    }, wait);
     return function() {
       context = this,
         args = arguments;
