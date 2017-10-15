@@ -241,8 +241,8 @@
     if (obj && obj.indexOf === nativeIndexOf) {
       return _.indexOf(obj, target) != -1;
     }
-    any(obj, function(value) {
-      if (found = value === target) {
+    found = any(obj, function(value) {
+      if (value === target) {
         return true;
       }
     });
