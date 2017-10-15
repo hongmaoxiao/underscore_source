@@ -632,7 +632,7 @@
       throttling = false;
     });
     return function() {
-      var context = this,
+      context = this,
         args = arguments;
       var throttler = function() {
         timeout = null;
