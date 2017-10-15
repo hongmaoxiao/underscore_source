@@ -570,7 +570,7 @@
     args = slice.call(arguments, 2);
     return bound = function() {
       if (!(this instanceof bound)) {
-        return func.apply(obj, args.concat(slice.call(arguments)));
+        return func.apply(context, args.concat(slice.call(arguments)));
       }
       ctor.prototype = func.prototype;
       var self = new ctor;
