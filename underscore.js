@@ -242,9 +242,7 @@
       return _.indexOf(obj, target) != -1;
     }
     found = any(obj, function(value) {
-      if (value === target) {
-        return true;
-      }
+      return value === target;
     });
     return found;
   };
@@ -1088,7 +1086,9 @@
       .replace(/\t/g, '\\t') +
       "');}return __p.join('');";
     var func = new Function('obj', '_', tmpl);
-    return data ? func(data, _) : function(data) { return func(data, _) };
+    return data ? func(data, _) : function(data) {
+      return func(data, _)
+    };
   };
 
   // The OOP Wrapper
