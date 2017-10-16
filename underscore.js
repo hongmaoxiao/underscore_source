@@ -628,7 +628,7 @@
   // during a given window of time.
   _.throttle = function(func, wait) {
     var context, args, timeout, throttling, more;
-   var whenDone = _.debounce(function() {
+    var whenDone = _.debounce(function() {
       more = throttling = false;
     }, wait);
     return function() {
@@ -637,7 +637,7 @@
       var later = function() {
         timeout = null;
         if (more) {
-        func.apply(context, args);
+          func.apply(context, args);
         }
         whenDone();
       };
