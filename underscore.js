@@ -910,7 +910,7 @@
     // Ensure that both objects contain the same number of properties.
     if (result) {
       for (var key in b) {
-        if (hasOwnProperty.call(b, key) && !size--) {
+        if (hasOwnProperty.call(b, key) && !(size--)) {
           break;
         }
       }
@@ -1087,8 +1087,8 @@
       .replace(/\n/g, '\\n')
       .replace(/\t/g, '\\t') +
       "');}return __p.join('');";
-    var func = new Function('obj', tmpl);
-    return data ? func(data) : func;
+    var func = new Function('obj', '_', tmpl);
+    return data ? func(data, _) : function(data) { return func(data, _) };
   };
 
   // The OOP Wrapper
