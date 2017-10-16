@@ -400,7 +400,7 @@
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array.
   _.last = function(array, n, guard) {
-    return (n != null) && !guard ? slice.call(array, array.length - n) : array[array.length -
+    return (n != null) && !guard ? slice.call(array, Math.max(array.length - n, 0)) : array[array.length -
       1];
   };
 
@@ -712,11 +712,14 @@
 
   // Returns a function that will only be executed after being called N times.
   _.after = function(times, func) {
-    return times ? function() {
+    if (times <= 0) {
+      return func();
+    }
+    return function() {
       if (--times < 1) {
         return func.apply(this, arguments);
       }
-    } : func();
+    };
   };
 
   // Object Functions
