@@ -474,9 +474,18 @@
 
   // Take the difference between one array and another.
   // Only the elements present in just the first array will remain.
-  _.difference = function(array, other) {
+  _.difference = function(array) {
+    var rest = _.flatten(slice.call(array, 1));
     return _.filter(array, function(value) {
-      return !_.include(other, value);
+      return !_.include(rest, value);
+    });
+  };
+
+  // Take the symmetric difference between a list of arrays. Only the elements
+  // present in one of the input arrays will remain.
+  _.symDifference = function() {
+    return _.reduce(arguments, function(memo, array) {
+      return _.union(_.difference(memo, array), _.difference(array, memo));
     });
   };
 
