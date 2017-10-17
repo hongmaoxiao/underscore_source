@@ -520,7 +520,7 @@
       return array.indexOf(item);
     }
     for (var i = 0, l = array.length; i < l; i++) {
-      if (array[i] === item) {
+      if (!_.isUndefined(array[i]) && array[i] === item) {
         return i;
       }
     }
@@ -537,7 +537,7 @@
     }
     var i = array.length;
     while (i--) {
-      if (array[i] === item) {
+      if (!_.isUndefined(array[i]) && array[i] === item) {
         return i;
       }
     }
