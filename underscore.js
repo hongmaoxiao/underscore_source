@@ -27,6 +27,7 @@
 
   // Create quick reference variables for speed access to core prototypes.
   var slice = ArrayProto.slice,
+    concat = ArrayProto.concat,
     unshift = ArrayProto.unshift,
     toString = ObjProto.toString,
     hasOwnProperty = ObjProto.hasOwnProperty;
@@ -516,8 +517,8 @@
     if (nativeIndexOf && array.indexOf === nativeIndexOf) {
       return array.indexOf(item);
     }
-    for (var i = 0, l = array.length; i < l; i++) {
-      if (i in array[i] && array[i] === item) {
+    for (i = 0, l = array.length; i < l; i++) {
+      if (i in array && array[i] === item) {
         return i;
       }
     }
@@ -534,7 +535,7 @@
     }
     var i = array.length;
     while (i--) {
-      if (i in array[i] && array[i] === item) {
+      if (i in array && array[i] === item) {
         return i;
       }
     }
