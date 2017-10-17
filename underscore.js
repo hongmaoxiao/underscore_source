@@ -119,7 +119,7 @@
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
-    var initial = memo !== void 0;
+    var initial = arguments.length > 2;
     if (obj == null) {
       obj = [];
     }
@@ -138,7 +138,7 @@
       }
     });
     if (!initial) {
-      throw new TypeError("Reduce of empty array with no initial value");
+      throw new TypeError('Reduce of empty array with no initial value');
     }
     return memo;
   };
@@ -146,6 +146,7 @@
   // The right-associative version of reduce, also known as `foldr`.
   // Delegates to **ECMAScript 5**'s native reduceRight if available.
   _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
+    var initial = arguments.length > 2;
     if (obj == null) {
       obj = [];
     }
@@ -153,10 +154,14 @@
       if (context) {
         iterator = _.bind(iterator, context)
       }
-      return memo !== void 0 ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
+      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
     }
-    var reversed = (_.isArray(obj) ? obj.slice() : _.toArray(obj)).reverse();
-    return _.reduce(reversed, iterator, memo, context);
+    var reversed = _.toArray(obj).reverse();
+    if (context && !initial) {
+      iterator = _.bind(iterator, context);
+    }
+    return initial ? _.reduce(reversed, iterator, memo, context) :
+      _.reduce(reversed, iterator);
   };
 
   // Return the first value which passes a truth test. Aliased as `detect`.
@@ -217,7 +222,7 @@
   // Delegates to **ECMAScript 5**'s native `some` if available.
   // Aliased as `any`.
   var any = _.some = _.any = function(obj, iterator, context) {
-    iterator = iterator || _.identity;
+    iterator || (iterator = _.identity);
     var result = false;
     if (obj == null) {
       return result;
@@ -481,14 +486,6 @@
     });
   };
 
-  // Take the symmetric difference between a list of arrays. Only the elements
-  // present in one of the input arrays will remain.
-  _.symDifference = function() {
-    return _.reduce(arguments, function(memo, array) {
-      return _.union(_.difference(memo, array), _.difference(array, memo));
-    });
-  };
-
   // Zip together multiple lists into a single array -- elements that share
   // an index go together.
   _.zip = function() {
@@ -703,7 +700,7 @@
   // conditionally execute the original function.
   _.wrap = function(func, wrapper) {
     return function() {
-      var args = [func].concat(slice.call(arguments));
+      var args = concat.apply([func], arguments);
       return wrapper.apply(this, args);
     };
   };
@@ -712,9 +709,9 @@
   // Returns a function that is the composition of a list of functions, each
   // consuming the return value of the function that follows.
   _.compose = function() {
-    var funcs = slice.call(arguments);
+    var funcs = arguments;
     return function() {
-      var args = slice.call(arguments);
+      var args = arguments;
       for (var i = funcs.length - 1; i >= 0; i--) {
         args = [funcs[i].apply(this, args)];
       }
@@ -829,10 +826,10 @@
       b = b._wrapped;
     }
     // Invoke a custom `isEqual` method if one is provided.
-    if (_.isFunction(a.isEqual)) {
+    if (a.isEqual && _.isFunction(a.isEqual)) {
       return a.isEqual(b);
     }
-    if (_.isFunction(b.isEqual)) {
+    if (b.isEqual && _.isFunction(b.isEqual)) {
       return b.isEqual(a);
     }
     // Compare object types.
@@ -846,13 +843,11 @@
       case '[object String]':
         // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
         // equivalent to `new String("5")`.
-        return String(a) == String(b);
+        return a == String(b);
       case '[object Number]':
-        a = +a;
-        b = +b;
         // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
         // other numeric values.
-        return a != a ? b != b : (a == 0 ? 1 / a == 1 / b : a == b);
+        return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
       case '[object Date]':
       case '[object Boolean]':
         // Coerce dates and booleans to numeric primitive values. Dates are compared by their
@@ -899,7 +894,7 @@
       }
     } else {
       // Objects with different constructors are not equivalent.
-      if ("constructor" in a != "constructor" in b || a.constructor !=
+      if ('constructor' in a != 'constructor' in b || a.constructor !=
         b.constructor) {
         return false;
       }
@@ -964,11 +959,10 @@
   };
 
   // Is a given variable an arguments object?
-  if (toString.call(arguments) == '[object Arguments]') {
-    _.isArguments = function(obj) {
-      return toString.call(obj) == '[object Arguments]';
-    };
-  } else {
+  _.isArguments = function(obj) {
+    return toString.call(obj) == '[object Arguments]';
+  };
+  if (!_.isArguments(arguments)) {
     _.isArguments = function(obj) {
       return !!(obj && hasOwnProperty.call(obj, 'callee'));
     };
