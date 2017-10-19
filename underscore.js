@@ -28,7 +28,8 @@
   // Create quick reference variables for speed access to core prototypes.
   var slice = ArrayProto.slice,
     unshift = ArrayProto.unshift,
-    toString = ObjProto.toString;
+    toString = ObjProto.toString,
+    hasOwnProperty = ObjProto.hasOwnProperty;
 
   // All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
@@ -1011,7 +1012,7 @@
 
   // Has own property?
   _.has = function(obj, key) {
-    return ObjProto.hasOwnProperty.call(obj, key);
+    return hasOwnProperty.call(obj, key);
   };
 
   // Utility Functions
