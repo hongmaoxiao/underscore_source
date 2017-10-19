@@ -28,8 +28,7 @@
   // Create quick reference variables for speed access to core prototypes.
   var slice = ArrayProto.slice,
     unshift = ArrayProto.unshift,
-    toString = ObjProto.toString,
-    hasOwnProperty = ObjProto.hasOwnProperty;
+    toString = ObjProto.toString;
 
   // All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
@@ -87,7 +86,7 @@
       }
     } else {
       for (var key in obj) {
-        if (hasOwnProperty.call(obj, key)) {
+        if (_.has(obj, key)) {
           if (iterator.call(context, obj[key], key, obj) === breaker) {
             return;
           }
@@ -610,7 +609,7 @@
     hasher || (hasher = _.identity);
     return function() {
       var key = hasher.apply(this, arguments);
-      return hasOwnProperty.call(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));
+      return _.has(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));
     };
   };
 
@@ -740,7 +739,7 @@
     }
     var keys = [];
     for (var key in obj) {
-      if (hasOwnProperty.call(obj, key)) {
+      if (_.has(obj, key)) {
         keys[keys.length] = key;
       }
     }
@@ -895,11 +894,11 @@
         return false;
       }
       for (var key in a) {
-        if (hasOwnProperty.call(a, key)) {
+        if (_.has(a, key)) {
           // Count the expected number of properties.
           size++;
           // Deep compare each member.
-          if (!(result = hasOwnProperty.call(b, key) && eq(a[key], b[key], stack))) {
+          if (!(result = _.has(b, key) && eq(a[key], b[key], stack))) {
             break;
           }
         }
@@ -907,7 +906,7 @@
       // Ensure that both objects contain the same number of properties.
       if (result) {
         for (var key in b) {
-          if (hasOwnProperty.call(b, key) && !(size--)) {
+          if (_.has(b, key) && !(size--)) {
             break;
           }
         }
@@ -931,7 +930,7 @@
       return obj.length === 0;
     }
     for (var key in obj) {
-      if (hasOwnProperty.call(obj, key)) {
+      if (_.has(obj, key)) {
         return false;
       }
     }
@@ -960,7 +959,7 @@
   };
   if (!_.isArguments(arguments)) {
     _.isArguments = function(obj) {
-      return !!(obj && hasOwnProperty.call(obj, 'callee'));
+      return !!(obj && _.has(obj, 'callee'));
     };
   }
 
@@ -1008,6 +1007,11 @@
   // Is a given variable undefined?
   _.isUndefined = function(obj) {
     return obj === void 0;
+  };
+
+  // Has own property?
+  _.has = function(obj, key) {
+    return ObjProto.hasOwnProperty.call(obj, key);
   };
 
   // Utility Functions
