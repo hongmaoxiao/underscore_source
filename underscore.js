@@ -213,7 +213,7 @@
       if (!(result = result && iterator.call(context, value, index, list)))
         return breaker;
     });
-    return result;
+    return !!result;
   };
 
   // Determine if at least one element in the object matches a truth test.
