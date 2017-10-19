@@ -1068,6 +1068,11 @@
     escape: /<%-([\s\S]+?)%>/g
   };
 
+  // When customizing `templateSettings`, if you don't want to define an
+  // interpolation, evaluation or escaping regex, we need one that is
+  // guaranteed not to match.
+  var noMatch = /.^/;
+
   // JavaScript micro-templating, similar to John Resig's implementation.
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
@@ -1077,13 +1082,13 @@
       'with(obj||{}){__p.push(\'' +
       str.replace(/\\/g, '\\\\')
       .replace(/'/g, "\\'")
-      .replace(c.escape, function(match, code) {
+      .replace(c.escape || noMatch, function(match, code) {
         return "',_.escape(" + code.replace(/\\'/g, "'") + "),'";
       })
-      .replace(c.interpolate, function(match, code) {
+      .replace(c.interpolate || noMatch, function(match, code) {
         return "'," + code.replace(/\\'/g, "'") + ",'";
       })
-      .replace(c.evaluate || null, function(match, code) {
+      .replace(c.evaluate || noMatch, function(match, code) {
         return "');" + code.replace(/\\'/g, "'")
           .replace(/[\r\n\t]/g, ' ') + ";__p.push('";
       })
