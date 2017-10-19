@@ -1098,6 +1098,11 @@
     };
   };
 
+  // Add a "chain" function, which will delegate to the wrapper.
+  _.chain = function(obj) {
+    return _(object).chain();
+  };
+
   // The OOP Wrapper
   // ---------------
 
