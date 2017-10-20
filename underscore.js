@@ -1162,7 +1162,7 @@
   _.prototype = wrapper.prototype;
 
   // If the value of the named property is a function then invoke it.
-  // Otherwise, return its value.
+  // Otherwise, return it.
   var result = function(obj, chain) {
     return chain ? _(obj).chain() : obj;
   };
