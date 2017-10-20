@@ -1161,7 +1161,8 @@
   // Expose `wrapper.prototype` as `_.prototype`
   _.prototype = wrapper.prototype;
 
-  // Helper function to continue chaining intermediate results.
+  // If the value of the named property is a function then invoke it.
+  // Otherwise, return its value.
   var result = function(obj, chain) {
     return chain ? _(obj).chain() : obj;
   };
