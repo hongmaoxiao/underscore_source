@@ -446,16 +446,15 @@
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
   _.uniq = _.unique = function(array, isSorted, iterator) {
-    var initial = iterator ? _.map(array, iterator) : array;
-    var result = [];
-    _.reduce(initial, function(memo, el, i) {
-      if (0 == i || (isSorted === true ? _.last(memo) != el : !_.include(memo, el))) {
-        memo[memo.length] = el;
-        result[result.length] = array[i];
+    var results = [];
+    _.reduce(iterator ? _.map(array, iterator) : array, function(memo, value, index) {
+      if (array.length < 3 || (isSorted ? _.last(memo) !== value || !memo.length : !_.include(memo, value))) {
+        memo[memo.length] = value;
+        results[results.length] = array[index];
       }
       return memo;
     }, []);
-    return result;
+    return results;
   };
 
   // Produce an array that contains the union: each distinct element from all of
