@@ -379,7 +379,7 @@
 
   // Return the number of elements in an object.
   _.size = function(obj) {
-    return _.toArray(obj).length;
+    return _.isArray(obj) ? obj.length : _.keys(obj).length;
   };
 
   // Array Functions
@@ -1119,23 +1119,23 @@
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
   _.template = function(str, data) {
-    var c  = _.templateSettings;
+    var c = _.templateSettings;
     var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
       'with(obj||{}){__p.push(\'' +
       str
-        .replace(escaper, function(match) {
-          return '\\' + escapes[match];
-        })
-        .replace(c.escape || noMatch, function(match, code) {
-          return "',_.escape(" + unescape(code) + "),\n'";
-        })
-        .replace(c.interpolate || noMatch, function(match, code) {
-          return "'," + unescape(code) + ",\n'";
-        })
-        .replace(c.evaluate || noMatch, function(match, code) {
-          return "');" + unescape(code) + ";\n__p.push('";
-        })
-        + "');}return __p.join('');";
+      .replace(escaper, function(match) {
+        return '\\' + escapes[match];
+      })
+      .replace(c.escape || noMatch, function(match, code) {
+        return "',_.escape(" + unescape(code) + "),\n'";
+      })
+      .replace(c.interpolate || noMatch, function(match, code) {
+        return "'," + unescape(code) + ",\n'";
+      })
+      .replace(c.evaluate || noMatch, function(match, code) {
+        return "');" + unescape(code) + ";\n__p.push('";
+      }) +
+      "');}return __p.join('');";
     var func = new Function('obj', '_', tmpl);
     if (data) return func(data, _);
     return function(data) {
