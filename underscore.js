@@ -457,7 +457,6 @@
   _.uniq = _.unique = function(array, isSorted, iterator) {
     var initial = iterator ? _.map(array, iterator) : array;
     var results = [];
-    // The `isSorted` flag is irrelevant if the array only contains two elements.
     if (array.length < 3) {
       isSorted = true;
     }
