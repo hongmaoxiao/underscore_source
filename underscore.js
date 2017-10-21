@@ -632,7 +632,7 @@
   _.delay = function(func, wait) {
     var args = slice.call(arguments, 2);
     return setTimeout(function() {
-      return func.apply(func, args);
+      return func.apply(null, args);
     }, wait);
   };
 
