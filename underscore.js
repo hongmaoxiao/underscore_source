@@ -437,7 +437,7 @@
       each(array, function(value) {
         if (_.isArray(value)) {
           if (shallow) {
-            ArrayProto.push(flat, value);
+            ArrayProto.push.apply(flat, value);
           } else {
             recursivelyFlatten(value, flat);
           }
