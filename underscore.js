@@ -837,9 +837,9 @@
   };
 
   // Return a copy of the object without the blacklisted properties.
-  _.exclude = function(obj) {
-    var blacklist = _.flatten(slice.call(arguments, 1));
-    return _.pick(obj, _.difference(_.keys(obj), blacklist));
+  _.omit = function(obj) {
+    var keys = flatten(slice.call(arguments, 1), false, []);
+    return _.pick(obj, _.difference(_.keys(obj), keys));
   };
 
   // Fill in a given object with default properties.
