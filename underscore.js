@@ -509,6 +509,16 @@
     return results;
   };
 
+  // Zip together two arrays -- an array of keys and an array of values -- into
+  // a single object.
+  _.zipObject = function(keys, values) {
+    var result = {};
+    for (var i = 0, l = keys.length; i < l; i++) {
+      result[keys[i]] = values[i];
+    }
+    return result;
+  };
+
   // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),
   // we need this function. Return the position of the first occurrence of an
   // item in an array, or -1 if the item is not included in the array.
@@ -1139,13 +1149,13 @@
   // Certain characters need to be escaped so that they can be put into a
   // string literal.
   var escapes = {
-    '\\':   '\\',
-    "'":    "'",
-    r:      '\r',
-    n:      '\n',
-    t:      '\t',
-    u2028:  '\u2028',
-    u2029:  '\u2029'
+    '\\': '\\',
+    "'": "'",
+    r: '\r',
+    n: '\n',
+    t: '\t',
+    u2028: '\u2028',
+    u2029: '\u2029'
   };
 
   for (var key in escapes) escapes[escapes[key]] = key;
