@@ -461,7 +461,7 @@
       isSorted = true;
     }
     _.reduce(initial, function(memo, value, index) {
-      if (isSorted ? _.last(memo) !== value || !memo.length : !_.include(memo, value)) {
+      if (isSorted ? (_.last(memo) !== value || !memo.length) : !_.include(memo, value)) {
         memo[memo.length] = value;
         results[results.length] = array[index];
       }
