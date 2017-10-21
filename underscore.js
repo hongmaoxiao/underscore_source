@@ -662,10 +662,10 @@
       if (throttling) {
         more = true;
       } else {
+        throttling = true;
         result = func.apply(context, args);
       }
       whenDone();
-      throttling = true;
       return result;
     };
   };
