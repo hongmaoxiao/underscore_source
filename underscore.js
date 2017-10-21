@@ -1077,13 +1077,7 @@
 
   // Escape a string for HTML interpolation.
   _.escape = function(string) {
-    return (''+string)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;')
-      .replace(/\//g,'&#x2F;');
+    return ('' + string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;');
   };
 
   // Get a value from an object as a property or as a function.
@@ -1163,7 +1157,7 @@
         return "'+\n((__t=(" + unescape(code) + "))==null?'':_.escape(__t))+\n'";
       })
       .replace(settings.interpolate || noMatch, function(match, code) {
-        return "'+\n(" + unescape(code) + ")+\n'";
+        return "'+\n((__t=(" + unescape(code) + "))==null?'':__t)+\n'";
       })
       .replace(settings.evaluate || noMatch, function(match, code) {
         return "';\n" + unescape(code) + "\n;__p+='";
