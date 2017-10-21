@@ -376,7 +376,7 @@
   // Safely convert anything iterable into a real, live array.
   _.toArray = function(iterable) {
     if (!iterable) return [];
-    if (iterable.toArray) {
+    if (iterable.toArray && _.isFunction(iterable.toArray)) {
       return iterable.toArray();
     }
     if (_.isArray(iterable)) return slice.call(iterable);
