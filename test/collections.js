@@ -44,8 +44,8 @@ $(document).ready(function() {
     var doubled = _([1, 2, 3]).map(function(num){ return num * 2; });
     equal(doubled.join(', '), '2, 4, 6', 'OO-style doubled numbers');
 
-    var ids = _.map($('div.underscore-test').children(), function(n){ return n.id; });
-    ok(_.include(ids, 'qunit-header'), 'can use collection methods on NodeLists');
+    var ids = _.map($('#map-test').children(), function(n){ return n.id; });
+    deepEqual(ids, ['id1', 'id2'], 'Can use collection methods on NodeLists.');
 
     var ids = _.map(document.images, function(n){ return n.id; });
     ok(ids[0] == 'chart_image', 'can use collection methods on HTMLCollections');
@@ -215,8 +215,6 @@ $(document).ready(function() {
 
     equal(-Infinity, _.max({}), 'Maximum value of an empty object');
     equal(-Infinity, _.max([]), 'Maximum value of an empty array');
-
-    equal(299999, _.max(_.range(1,300000)), "Maximum value of a too-big array");
   });
 
   test('collections: min', function() {
@@ -231,8 +229,6 @@ $(document).ready(function() {
     var now = new Date(9999999999);
     var then = new Date(0);
     equal(_.min([now, then]), then);
-
-    equal(1, _.min(_.range(1,300000)), "Minimum value of a too-big array");
   });
 
   test('collections: sortBy', function() {
