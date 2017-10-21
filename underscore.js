@@ -322,9 +322,7 @@
 
   // Sort the object's values by a criteria produced by an iterator.
   _.sortBy = function(obj, val, context) {
-    var iterator = _.isFunction(val) ? val : function(obj) {
-      return obj[val];
-    };
+    var iterator = lookupIterator(obj, val);
     return _.pluck(_.map(obj, function(value, index, list) {
       return {
         value: value,
@@ -343,18 +341,39 @@
     }), 'value');
   };
 
+  // An internal function to generate lookup iterators.
+  var lookupIterator = function(obj, val) {
+    return _.isFunction(val) ? val : function(obj) {
+      return obj[val];
+    };
+  };
+
+  var group = function(obj, val, behavior) {
+    var result = {};
+    var iterator = lookupIterator(obj, val);
+    each(obj, function(value, index) {
+      var key = iterator(value, index);
+      behavior(result, key, value);
+    });
+    return result;
+  };
+
   // Groups the object's values by a criterion. Pass either a string attribute
   // to group by, or a function that returns the criterion.
   _.groupBy = function(obj, val) {
-    var result = {};
-    var iterator = _.isFunction(val) ? val : function(obj) {
-      return obj[val];
-    };
-    each(obj, function(value, index) {
-      var key = iterator(value, index);
+    return group(obj, val, function(result, key, value) {
       (result[key] || (result[key] = [])).push(value);
     });
-    return result;
+  };
+
+  // Counts instances of an object that group by a certain criterion. Pass
+  // either a string attribute to count by, or a function that returns the
+  // criterion.
+  _.countBy = function(obj, val) {
+    return group(obj, val, function(result, key, value) {
+      result[key] || (result[key] = 0);
+      result[key]++;
+    });
   };
 
   // Use a comparator function to figure out the smallest index at which
@@ -849,7 +868,7 @@
   };
 
   // Internal recursive comparison function for `isEqual`.
-  function eq(a, b, stack) {
+  var eq = function(a, b, stack) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the Harmony `egal` proposal: http://wiki.ecmascript.org/doku.php?id=harmony:egal.
     if (a === b) {
@@ -1003,12 +1022,12 @@
   };
 
   // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'],
-    function(name) {
-      _['is' + name] = function(obj){
-        return toString.call(obj) == '[object' + name + ']';
-      };
-    });
+  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
+    _['is' + name] = function(obj) {
+      return toString.call(obj) == '[object' + name + ']';
+    };
+  });
+
   // Define a fallback version of the method in browsers (ahem, IE), where
   // there isn't any inspectable "Arguments" type.
   if (!_.isArguments(arguments)) {
@@ -1065,9 +1084,9 @@
   };
 
   // Run a function **n** times.
-  _.times = function(n, fn, context) {
+  _.times = function(n, iterator, context) {
     for (var i = 0; i < n; i++) {
-      fn.call(context, i);
+      iterator.call(context, i);
     }
   };
 
