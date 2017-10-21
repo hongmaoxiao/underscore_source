@@ -1081,7 +1081,13 @@
 
   // Escape a string for HTML interpolation.
   _.escape = function(string) {
-    return ('' + string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;');
+    return (''+string)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+      .replace(/\//g,'&#x2F;');
   };
 
   // Get a value from an object as a property or as a function.
@@ -1123,16 +1129,16 @@
   // Certain characters need to be escaped so that they can be put into a
   // string literal.
   var escapes = {
-    '\\': '\\',
-    "'": "'",
-    r: '\r',
-    n: '\n',
-    t: '\t',
-    u2028: '\u2028',
-    u2029: '\u2029'
+    '\\':   '\\',
+    "'":    "'",
+    r:      '\r',
+    n:      '\n',
+    t:      '\t',
+    u2028:  '\u2028',
+    u2029:  '\u2029'
   };
 
-  for (var p in escapes) escapes[escapes[p]] = p;
+  for (var key in escapes) escapes[escapes[key]] = key;
   var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
   var unescaper = /\\(\\|'|r|n|t|u2028|u2029)/g;
 
