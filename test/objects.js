@@ -3,16 +3,15 @@ $(document).ready(function() {
   module("Objects");
 
   test("objects: keys", function() {
-    var exception = /object/;
     equal(_.keys({one : 1, two : 2}).join(', '), 'one, two', 'can extract the keys from an object');
     // the test above is not safe because it relies on for-in enumeration order
     var a = []; a[1] = 0;
     equal(_.keys(a).join(', '), '1', 'is not fooled by sparse arrays; see issue #95');
-    raises(function() { _.keys(null); }, exception, 'throws an error for `null` values');
-    raises(function() { _.keys(void 0); }, exception, 'throws an error for `undefined` values');
-    raises(function() { _.keys(1); }, exception, 'throws an error for number primitives');
-    raises(function() { _.keys('a'); }, exception, 'throws an error for string primitives');
-    raises(function() { _.keys(true); }, exception, 'throws an error for boolean primitives');
+    raises(function() { _.keys(null); }, TypeError, 'throws an error for `null` values');
+    raises(function() { _.keys(void 0); }, TypeError, 'throws an error for `undefined` values');
+    raises(function() { _.keys(1); }, TypeError, 'throws an error for number primitives');
+    raises(function() { _.keys('a'); }, TypeError, 'throws an error for string primitives');
+    raises(function() { _.keys(true); }, TypeError, 'throws an error for boolean primitives');
   });
 
   test("objects: values", function() {
@@ -39,6 +38,16 @@ $(document).ready(function() {
     ok(_.isEqual(result, {x:2, a:'b'}), 'extending from multiple source objects last property trumps');
     result = _.extend({}, {a: void 0, b: null});
     equal(_.keys(result).join(''), 'ab', 'extend does not copy undefined values');
+  });
+
+  test("objects: pick", function() {
+    var result;
+    result = _.pick({a:1, b:2, c:3}, 'a', 'c');
+    ok(_.isEqual(result, {a:1, c:3}), 'can restrict properties to those named');
+    result = _.pick({a:1, b:2, c:3}, ['b', 'c']);
+    ok(_.isEqual(result, {b:2, c:3}), 'can restrict properties to those named in an array');
+    result = _.pick({a:1, b:2, c:3}, ['a'], 'b');
+    ok(_.isEqual(result, {a:1, b:2}), 'can restrict properties to those named in mixed args');
   });
 
   test("objects: defaults", function() {
@@ -168,7 +177,7 @@ $(document).ready(function() {
 
     // Arrays with primitive and object values.
     ok(_.isEqual([1, "Larry", true], [1, "Larry", true]), "Arrays containing identical primitives are equal");
-    ok(_.isEqual([/Moe/g, new Date(2009, 9, 25)], [/Moe/g, new Date(2009, 9, 25)]), "Arrays containing equivalent elements are equal");
+    ok(_.isEqual([(/Moe/g), new Date(2009, 9, 25)], [(/Moe/g), new Date(2009, 9, 25)]), "Arrays containing equivalent elements are equal");
 
     // Multi-dimensional arrays.
     var a = [new Number(47), false, "Larry", /Moe/, new Date(2009, 11, 13), ['running', 'biking', new String('programming')], {a: 47}];
@@ -336,7 +345,7 @@ $(document).ready(function() {
     Date.prototype.isEqual = function(that) {
       var this_date_components = this.toJSON();
       var that_date_components = (that instanceof Date) ? that.toJSON() : that;
-      delete this_date_components['_type']; delete that_date_components['_type']
+      delete this_date_components['_type']; delete that_date_components['_type'];
       return _.isEqual(this_date_components, that_date_components);
     };
 
