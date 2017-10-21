@@ -645,7 +645,7 @@
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time.
   _.throttle = function(func, wait) {
-    var context, args, timeout, throttling, more;
+    var context, args, timeout, throttling, more, result;
     var whenDone = _.debounce(function() {
       more = throttling = false;
     }, wait);
@@ -665,10 +665,11 @@
       if (throttling) {
         more = true;
       } else {
-        func.apply(context, args);
+        result = func.apply(context, args);
       }
       whenDone();
       throttling = true;
+      return result;
     };
   };
 
@@ -797,7 +798,7 @@
   // Restrict a given object to the properties named
   _.pick = function(obj) {
     var result = {};
-    each(_.flatten(slice.call(arguments, 1)), function(key){
+    each(_.flatten(slice.call(arguments, 1)), function(key) {
       if (key in obj) {
         result[key] = obj[key];
       }
@@ -1144,23 +1145,23 @@
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
   _.template = function(str, data) {
-    var settings  = _.templateSettings;
+    var settings = _.templateSettings;
     var source = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
       'with(obj||{}){__p.push(\'' +
       str
-        .replace(escaper, function(match) {
-          return '\\' + escapes[match];
-        })
-        .replace(settings.escape || noMatch, function(match, code) {
-          return "',\n_.escape(" + unescape(code) + "),\n'";
-        })
-        .replace(settings.interpolate || noMatch, function(match, code) {
-          return "',\n" + unescape(code) + ",\n'";
-        })
-        .replace(settings.evaluate || noMatch, function(match, code) {
-          return "');\n" + unescape(code) + "\n;__p.push('";
-        })
-        + "');\n}\nreturn __p.join('');";
+      .replace(escaper, function(match) {
+        return '\\' + escapes[match];
+      })
+      .replace(settings.escape || noMatch, function(match, code) {
+        return "',\n_.escape(" + unescape(code) + "),\n'";
+      })
+      .replace(settings.interpolate || noMatch, function(match, code) {
+        return "',\n" + unescape(code) + ",\n'";
+      })
+      .replace(settings.evaluate || noMatch, function(match, code) {
+        return "');\n" + unescape(code) + "\n;__p.push('";
+      }) +
+      "');\n}\nreturn __p.join('');";
     var render = new Function('obj', '_', source);
     if (data) return render(data, _);
     var template = function(data) {
