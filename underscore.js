@@ -455,7 +455,7 @@
   var flatten = function(input, shallow, output) {
     each(input, function(value) {
       if (_.isArray(value)) {
-        shallow ? push.apply(output, value) : flatten(value, output);
+        shallow ? push.apply(output, value) : flatten(value, shallow, output);
       } else {
         output.push(value);
       }
@@ -496,7 +496,7 @@
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
   _.union = function() {
-    return _.uniq(flatten(arguments, true));
+    return _.uniq(flatten(arguments, true, []));
   };
 
   // Produce an array that contains every item shared between two given arrays.
@@ -513,7 +513,7 @@
   // Take the difference between one array and another.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var rest = flatten(slice.call(arguments, 1), true);
+    var rest = flatten(slice.call(arguments, 1), true, []);
     return _.filter(array, function(value) {
       return !_.include(rest, value);
     });
@@ -831,7 +831,7 @@
   // Restrict a given object to the properties named
   _.pick = function(obj) {
     var result = {};
-    each(flatten(slice.call(arguments, 1)), function(key) {
+    each(flatten(slice.call(arguments, 1), true, []), function(key) {
       if (key in obj) {
         result[key] = obj[key];
       }
@@ -1024,7 +1024,7 @@
   // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
   each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
     _['is' + name] = function(obj) {
-      return toString.call(obj) == '[object' + name + ']';
+      return toString.call(obj) == '[object ' + name + ']';
     };
   });
 
