@@ -82,7 +82,7 @@
       obj.forEach(iterator, context);
     } else if (obj.length === +obj.length) {
       for (var i = 0, l = obj.length; i < l; i++) {
-        if (i in obj && iterator.call(context, obj[i], i, obj) === breaker) {
+        if (iterator.call(context, obj[i], i, obj) === breaker) {
           return;
         }
       }
@@ -109,9 +109,6 @@
     each(obj, function(value, index, list) {
       results[results.length] = iterator.call(context, value, index, list);
     });
-    if (obj.length === +obj.length) {
-      results.length = obj.length;
-    }
     return results;
   };;
 
@@ -531,7 +528,7 @@
       return array.indexOf(item);
     }
     for (i = 0, l = array.length; i < l; i++) {
-      if (i in array && array[i] === item) {
+      if (array[i] === item) {
         return i;
       }
     }
@@ -548,7 +545,7 @@
     }
     var i = array.length;
     while (i--) {
-      if (i in array && array[i] === item) {
+      if (array[i] === item) {
         return i;
       }
     }
