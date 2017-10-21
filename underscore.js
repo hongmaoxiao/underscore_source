@@ -431,18 +431,21 @@
     });
   };
 
+  // Internal implementation of a recursive `flatten` function.
+  var flatten = function(input, shallow, output) {
+    each(input, function(value) {
+      if (_.isArray(value)) {
+        shallow ? push.apply(output, value) : flatten(value, output);
+      } else {
+        output.push(value);
+      }
+    });
+    return output;
+  };
+
   // Return a completely flattened version of an array.
   _.flatten = function(array, shallow) {
-    return (function flatten(input, output) {
-      each(input, function(value) {
-        if (_.isArray(value)) {
-          shallow ? push.apply(output, value) : flatten(value, output);
-        } else {
-          output.push(value);
-        }
-      });
-      return output;
-    })(array, []);
+    return flatten(array, shallow, []);
   };
 
   // Return a version of the array that does not contain the specified value(s).
@@ -473,7 +476,7 @@
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
   _.union = function() {
-    return _.uniq(_.flatten(arguments, true));
+    return _.uniq(flatten(arguments, true));
   };
 
   // Produce an array that contains every item shared between two given arrays.
@@ -490,7 +493,7 @@
   // Take the difference between one array and another.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var rest = _.flatten(slice.call(arguments, 1), true);
+    var rest = flatten(slice.call(arguments, 1), true);
     return _.filter(array, function(value) {
       return !_.include(rest, value);
     });
@@ -808,7 +811,7 @@
   // Restrict a given object to the properties named
   _.pick = function(obj) {
     var result = {};
-    each(_.flatten(slice.call(arguments, 1)), function(key) {
+    each(flatten(slice.call(arguments, 1)), function(key) {
       if (key in obj) {
         result[key] = obj[key];
       }
