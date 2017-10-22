@@ -1118,6 +1118,11 @@
     }
   };
 
+  // Return a random integer between min and max (inclusive).
+  _.random = function(min, max) {
+    return Math.round(min + Math.random() * (max - min));
+  };
+
   // List of HTML entities for escaping.
   var htmlEscapes = {
     '&': '&amp;',
