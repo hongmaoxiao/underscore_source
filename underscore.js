@@ -278,7 +278,7 @@
       return [];
     }
     return _.filter(obj, function(value) {
-      for (var key in obj) {
+      for (var key in attrs) {
         if (attrs[key] !== value[key]) {
           return false;
         }
@@ -352,8 +352,8 @@
   };
 
   // Sort the object's values by a criteria produced by an iterator.
-  _.sortBy = function(obj, val, context) {
-    var iterator = lookupIterator(obj, val);
+  _.sortBy = function(obj, value, context) {
+    var iterator = lookupIterator(value);
     return _.pluck(_.map(obj, function(value, index, list) {
       return {
         value: value,
