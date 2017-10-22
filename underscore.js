@@ -87,7 +87,7 @@
     }
     if (nativeForEach && obj.forEach === nativeForEach) {
       obj.forEach(iterator, context);
-    } else if (ob.length === +obj.length) {
+    } else if (obj.length === +obj.length) {
       for (var i = 0, l = obj.length; i < l; i++) {
         if (iterator.call(context, obj[i], i, obj) === breaker) {
           return;
@@ -761,7 +761,8 @@
   // conditionally execute the original function.
   _.wrap = function(func, wrapper) {
     return function() {
-      var args = [func].concat(slice.call(arguments, 0));
+      var args = [func];
+      push.apply(args, arguments);
       return wrapper.apply(this, args);
     };
   };
@@ -1170,8 +1171,8 @@
     each(_.functions(obj), function(name) {
       var func = _[name] = obj[name];
       _.prototype[name] = function() {
-        var args = slice.call(arguments);
-        args.unshift(this._wrapped);
+        var args = [this._wrapped];
+        push.apply(args, arguments);
         return result.call(this, func.apply(_, args));
       };
     });
