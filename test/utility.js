@@ -235,4 +235,10 @@ $(document).ready(function() {
     templateEscaped({f: function(){ ok(!(countEscaped++)); }});
   });
 
+  test('#746 - _.template settings are not modified.', 1, function() {
+    var settings = {};
+    _.template('', null, settings);
+    deepEqual(settings, {});
+  });
+
 });
