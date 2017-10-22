@@ -51,6 +51,14 @@ $(document).ready(function() {
     equal(_.escape(null), '');
   });
 
+  test("utility: _.unescape", function() {
+    var string = "Curly & Moe";
+    equal(_.unescape("Curly &amp; Moe"), string);
+    equal(_.unescape("Curly &amp;amp; Moe"), "Curly &amp; Moe");
+    equal(_.unescape(null), '');
+    equal(_.unescape(_.escape(string)), string);
+  });
+
   test("utility: template", function() {
     var basicTemplate = _.template("<%= thing %> is gettin' on my noives!");
     var result = basicTemplate({thing : 'This'});
@@ -160,6 +168,15 @@ $(document).ready(function() {
   test('_.template handles \\u2028 & \\u2029', function() {
     var tmpl = _.template('<p>\u2028<%= "\\u2028\\u2029" %>\u2029</p>');
     strictEqual(tmpl(), '<p>\u2028\u2028\u2029\u2029</p>');
+  });
+
+  test('utility: template gives you the body of the template on SyntaxError', function() {
+    var template = '<b><%= if %></b>';
+    try {
+      _.template(template);
+    } catch(e) {
+      equal(e.template, template);
+    }
   });
 
   test('result calls functions and returns primitives', function() {
