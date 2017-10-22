@@ -344,6 +344,13 @@
     return shuffled;
   };
 
+  // An internal function to generate lookup iterators.
+  var lookupIterator = function(value) {
+    return _.isFunction(val) ? value : function(obj) {
+      return obj[value];
+    };
+  };
+
   // Sort the object's values by a criteria produced by an iterator.
   _.sortBy = function(obj, val, context) {
     var iterator = lookupIterator(obj, val);
@@ -356,31 +363,21 @@
     }).sort(function(left, right) {
       var a = left.criteria,
         b = right.criteria;
-      var ai = left.index,
-        bi = right.index;
-      if (a !== b) {
-        if (a > b || a === void 0) {
-          return 1;
-        } else if (a < b || b === void 0) {
-          return -1;
-        }
+      if (a > b || a === void 0) {
+        return 1;
       }
-      return ai < bi ? -1 : 1;
+      if (a < b || b === void 0) {
+        return -1;
+      }
+      return a.index < b.index ? -1 : 1;
     }), 'value');
   };
 
-  // An internal function to generate lookup iterators.
-  var lookupIterator = function(obj, val) {
-    return _.isFunction(val) ? val : function(obj) {
-      return obj[val];
-    };
-  };
-
-  var group = function(obj, val, behavior) {
+  var group = function(obj, value, context, behavior) {
     var result = {};
-    var iterator = lookupIterator(obj, val);
+    var iterator = lookupIterator(value);
     each(obj, function(value, index) {
-      var key = iterator(value, index);
+      var key = iterator.call(context, value, index);
       behavior(result, key, value);
     });
     return result;
@@ -388,8 +385,8 @@
 
   // Groups the object's values by a criterion. Pass either a string attribute
   // to group by, or a function that returns the criterion.
-  _.groupBy = function(obj, val) {
-    return group(obj, val, function(result, key, value) {
+  _.groupBy = function(obj, value, context) {
+    return group(obj, value, context, function(result, key, value) {
       (result[key] || (result[key] = [])).push(value);
     });
   };
@@ -397,8 +394,8 @@
   // Counts instances of an object that group by a certain criterion. Pass
   // either a string attribute to count by, or a function that returns the
   // criterion.
-  _.countBy = function(obj, val) {
-    return group(obj, val, function(result, key, value) {
+  _.countBy = function(obj, value, context) {
+    return group(obj, value, context, function(result, key, value) {
       result[key] || (result[key] = 0);
       result[key]++;
     });
