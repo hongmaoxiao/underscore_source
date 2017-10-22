@@ -499,7 +499,7 @@
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
   _.union = function() {
-    return _.uniq(flatten(arguments, true, []));
+    return _.uniq(_.flatten(arguments, true));
   };
 
   // Produce an array that contains every item shared between two given arrays.
@@ -516,7 +516,7 @@
   // Take the difference between one array and another.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var rest = flatten(slice.call(arguments, 1), true, []);
+    var rest = _.flatten(slice.call(arguments, 1), true);
     return _.filter(array, function(value) {
       return !_.include(rest, value);
     });
