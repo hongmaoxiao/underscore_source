@@ -696,7 +696,7 @@
       var later = function() {
         timeout = null;
         if (more) {
-          func.apply(context, args);
+          result = func.apply(context, args);
         }
         whenDone();
       };
