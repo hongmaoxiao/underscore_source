@@ -924,14 +924,6 @@
     if (b instanceof _) {
       b = b._wrapped;
     }
-    // Invoke a custom `isEqual` method if one is provided.
-    if (a.isEqual && _.isFunction(a.isEqual)) {
-      return a.isEqual(b);
-    }
-    if (b.isEqual && _.isFunction(b.isEqual)) {
-      return b.isEqual(a);
-    }
-    // Compare object types.
     // Compare `[[Class]]` names.
     var className = toString.call(a);
     if (className != toString.call(b)) {
