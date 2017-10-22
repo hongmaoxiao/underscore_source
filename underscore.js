@@ -346,7 +346,7 @@
 
   // An internal function to generate lookup iterators.
   var lookupIterator = function(value) {
-    return _.isFunction(val) ? value : function(obj) {
+    return _.isFunction(value) ? value : function(obj) {
       return obj[value];
     };
   };
@@ -363,13 +363,11 @@
     }).sort(function(left, right) {
       var a = left.criteria,
         b = right.criteria;
-      if (a > b || a === void 0) {
-        return 1;
+      if (a !== b) {
+        if (a > b || a === void 0) return 1;
+        if (a < b || b === void 0) return -1;
       }
-      if (a < b || b === void 0) {
-        return -1;
-      }
-      return a.index < b.index ? -1 : 1;
+      return left.index < right.index ? -1 : 1;
     }), 'value');
   };
 
