@@ -715,22 +715,23 @@
   // N milliseconds. If `immediate` is passed, trigger the function on the
   // leading edge, instead of the trailing.
   _.debounce = function(func, wait, immediate) {
-    var timeout;
+    var timeout, result;
     return function() {
       var context = this,
         args = arguments;
       var later = function() {
         timeout = null;
         if (!immediate) {
-          func.apply(context, args);
+          result = func.apply(context, args);
         }
       };
       var callNow = immediate && !timeout;
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
       if (callNow) {
-        func.apply(context, args);
+        result = func.apply(context, args);
       }
+      return result;
     };
   };
 
