@@ -170,7 +170,10 @@
     if (context && !initial) {
       iterator = _.bind(iterator, context);
     }
-    right = {keys: _.keys(obj).reverse(), list: obj};
+    right = {
+      keys: _.keys(obj).reverse(),
+      list: obj
+    };
     var values = _.toArray(obj).reverse();
     var result = initial ? _.reduce(values, iterator, memo, context) :
       _.reduce(values, iterator);
@@ -1096,6 +1099,12 @@
     };
   }
 
+  // Optimize `isFunction` if appropriate.
+  if (typeof /./ !== 'function') {
+    _.isFunction = function(obj) {
+      return typeof obj === 'function';
+    }
+  }
   // Is a given object a finite number?
   _.isFinite = function(obj) {
     return _.isNumber(obj) && isFinite(obj);
