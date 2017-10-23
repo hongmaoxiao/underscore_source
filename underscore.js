@@ -585,15 +585,20 @@
     if (array == null) {
       return -1;
     }
-    var i, l;
+    var i = 0,
+      l = array.length;
     if (isSorted) {
-      i = _.sortedIndex(array, item);
-      return array[i] === item ? i : -1;
+      if (typeof isSorted == 'number') {
+        i = (isSorted < 0 ? Math.max(0, l + isSorted) : isSorted);
+      } else {
+        i = _.sortedIndex(array, item);
+        return array[i] === item ? i : -1;
+      }
     }
     if (nativeIndexOf && array.indexOf === nativeIndexOf) {
-      return array.indexOf(item);
+      return array.indexOf(item, isSorted);
     }
-    for (i = 0, l = array.length; i < l; i++) {
+    for (; i < l; i++) {
       if (array[i] === item) {
         return i;
       }
@@ -602,14 +607,14 @@
   };
 
   // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
-  _.lastIndexOf = function(array, item) {
+  _.lastIndexOf = function(array, item, fromIndex) {
     if (array == null) {
       return -1;
     }
     if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
-      return array.lastIndexOf(item);
+      return array.lastIndexOf(item, fromIndex);
     }
-    var i = array.length;
+    var i = (fromIndex != null ? fromIndex : array.length);
     while (i--) {
       if (array[i] === item) {
         return i;
