@@ -254,9 +254,9 @@
     return !!result;
   };
 
-  // Determine if a given value is included in the array or object using `===`.
-  // Aliased as `contains`.
-  _.include = _.contains = function(obj, target) {
+  // Determine if the array or object contains a given value (using `===`).
+  // Aliased as `include`.
+  _.contains = _.include = function(obj, target) {
     var found = false;
     if (obj == null) {
       return found;
@@ -514,7 +514,7 @@
     var seen = [];
     each(initial, function(value, index) {
       if (isSorted ? (!index || seen[seen.length - 1] !== value) :
-        !_.include(seen, value)) {
+        !_.contains(seen, value)) {
         seen.push(value);
         results.push(array[index]);
       }
@@ -544,7 +544,7 @@
   _.difference = function(array) {
     var rest = concat.apply(ArrayProto, slice.call(arguments, 1));
     return _.filter(array, function(value) {
-      return !_.include(rest, value);
+      return !_.contains(rest, value);
     });
   };
 
@@ -911,7 +911,7 @@
     var copy = {};
     var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
     for (var key in obj) {
-      if (!_.include(keys, key)) {
+      if (!_.contains(keys, key)) {
         copy[key] = obj[key];
       }
     }
