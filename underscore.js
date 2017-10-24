@@ -119,9 +119,6 @@
     return results;
   };
 
-  // Internal data flag for performing `reduceRight`.
-  var right = null;
-
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
@@ -129,17 +126,13 @@
     if (obj == null) {
       obj = [];
     }
-    if (!right && nativeReduce && obj.reduce === nativeReduce) {
+    if (nativeReduce && obj.reduce === nativeReduce) {
       if (context) {
         iterator = _.bind(iterator, context)
       }
       return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
     }
     each(obj, function(value, index, list) {
-      if (right) {
-        index = right.keys[index];
-        list = right.list;
-      }
       if (!initial) {
         memo = value;
         initial = true;
@@ -166,19 +159,24 @@
       }
       return arguments.length > 2 ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
     }
-    var keys = _.keys(obj).reverse();
-    if (context && !initial) {
-      iterator = _.bind(iterator, context);
+    var length = obj.length;
+    if (length !== +length) {
+      var keys = _.keys(obj);
+      length = keys.length;
     }
-    right = {
-      keys: _.keys(obj).reverse(),
-      list: obj
-    };
-    var values = _.toArray(obj).reverse();
-    var result = initial ? _.reduce(values, iterator, memo, context) :
-      _.reduce(values, iterator);
-    right = null;
-    return result;
+    each(obj, function(value, index, list) {
+      index = keys ? keys[--length] : --length;
+      if (!initial) {
+        memo = obj[index];
+        initial = true;
+      } else {
+        memo = iterator.call(context, memo, obj[index], index, list)
+      }
+    });
+    if (!initial) {
+      throw new TypeError('Reduce of empty array with no initial, value');
+    }
+    return memo;
   };
 
   // Return the first value which passes a truth test. Aliased as `detect`.
@@ -399,7 +397,7 @@
   // to group by, or a function that returns the criterion.
   _.groupBy = function(obj, value, context) {
     return group(obj, value, context, function(result, key, value) {
-      (_.has(result, key) ? result[key] || (result[key] = [])).push(value);
+      (_.has(result, key) ? result[key] : (result[key] = [])).push(value);
     });
   };
 
@@ -417,14 +415,14 @@
 
   // Use a comparator function to figure out the smallest index at which
   // an object should be inserted so as to maintain order. Uses binary search.
-  _.sortedIndex = function(array, obj, iterator) {
+  _.sortedIndex = function(array, obj, iterator, context) {
     iterator || (iterator = _.identity);
-    var value = iterator(obj);
+    var value = iterator.call(context, obj);
     var low = 0,
       high = array.length;
     while (low < high) {
       var mid = (low + high) >> 1;
-      iterator(array[mid]) < value ? low = mid + 1 : high = mid;
+      iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;
     }
     return low;
   };
@@ -510,8 +508,8 @@
   // Produce a duplicate-free version of the array. If the array has already
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
-  _.uniq = _.unique = function(array, isSorted, iterator) {
-    var initial = iterator ? _.map(array, iterator) : array;
+  _.uniq = _.unique = function(array, isSorted, iterator, context) {
+    var initial = iterator ? _.map(array, iterator, context) : array;
     var results = [];
     var seen = [];
     each(initial, function(value, index) {
