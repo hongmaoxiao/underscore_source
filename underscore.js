@@ -82,9 +82,6 @@
   // Handles objects with the built-in `forEach`, arrays, and raw objects.
   // Delegates to **ECMAScript 5**'s native `forEach` if available.
   var each = _.each = _.forEach = function(obj, iterator, context) {
-    if (obj == null) {
-      return;
-    }
     if (nativeForEach && obj.forEach === nativeForEach) {
       obj.forEach(iterator, context);
     } else if (obj.length === +obj.length) {
@@ -109,9 +106,6 @@
   // Delegates to **ECMAScript 5**'s native `map` if available.
   _.map = _.collect = function(obj, iterator, context) {
     var results = [];
-    if (obj == null) {
-      return results;
-    }
     if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
     each(obj, function(value, index, list) {
       results[results.length] = iterator.call(context, value, index, list);
@@ -123,9 +117,6 @@
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
     var initial = arguments.length > 2;
-    if (obj == null) {
-      obj = [];
-    }
     if (nativeReduce && obj.reduce === nativeReduce) {
       if (context) {
         iterator = _.bind(iterator, context)
@@ -150,9 +141,6 @@
   // Delegates to **ECMAScript 5**'s native reduceRight if available.
   _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
     var initial = arguments.length > 2;
-    if (obj == null) {
-      obj = [];
-    }
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       if (context) {
         iterator = _.bind(iterator, context)
@@ -197,9 +185,6 @@
   _.filter = _.select = function(obj, iterator, context) {
     if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
     var results = [];
-    if (obj == null) {
-      return results;
-    }
     each(obj, function(value, index, list) {
       if (iterator.call(context, value, index, list)) {
         results[results.length] = value;
@@ -223,9 +208,6 @@
   _.every = _.all = function(obj, iterator, context) {
     iterator || (iterator = _.identity);
     var result = true;
-    if (obj == null) {
-      return results;
-    }
     if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
     each(obj, function(value, index, list) {
       if (!(result = result && iterator.call(context, value, index, list)))
@@ -240,9 +222,6 @@
   var any = _.some = _.any = function(obj, iterator, context) {
     iterator || (iterator = _.identity);
     var result = false;
-    if (obj == null) {
-      return result;
-    }
     if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
     each(obj, function(value, index, list) {
       if (result || (result = iterator.call(context, value, index, list))) {
@@ -256,9 +235,6 @@
   // Aliased as `include`.
   _.contains = _.include = function(obj, target) {
     var found = false;
-    if (obj == null) {
-      return found;
-    }
     if (obj && obj.indexOf === nativeIndexOf) {
       return _.indexOf(obj, target) != -1;
     }
@@ -582,9 +558,6 @@
   // If the array is large and already in sort order, pass `true`
   // for **isSorted** to use binary search.
   _.indexOf = function(array, item, isSorted) {
-    if (array == null) {
-      return -1;
-    }
     var i = 0,
       l = array.length;
     if (isSorted) {
@@ -608,9 +581,6 @@
 
   // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
   _.lastIndexOf = function(array, item, fromIndex) {
-    if (array == null) {
-      return -1;
-    }
     if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
       return array.lastIndexOf(item, fromIndex);
     }
