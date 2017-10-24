@@ -577,11 +577,13 @@
   };
 
   // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
-  _.lastIndexOf = function(array, item, fromIndex) {
+  _.lastIndexOf = function(array, item, from) {
+    var hasIndex = from != null;
     if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
-      return array.lastIndexOf(item, fromIndex);
+      return hasIndex ? array.lastIndexOf(item, fromIndex) :
+        array.lastIndexOf(item);
     }
-    var i = (fromIndex != null ? fromIndex : array.length);
+    var i = (hasIndex ? from : array.length);
     while (i--) {
       if (array[i] === item) {
         return i;
