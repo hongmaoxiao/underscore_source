@@ -1162,9 +1162,9 @@
 
   // Run a function **n** times.
   _.times = function(n, iterator, context) {
-    var accum = [];
+    var accum = new Array(n);
     for (var i = 0; i < n; i++) {
-      accum.push(iterator.call(context, i));
+      accum[i] = iterator.call(context, i);
     }
     return accum;
   };
