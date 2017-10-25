@@ -603,7 +603,7 @@
     if (array == null) return -1;
     var hasIndex = from != null;
     if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
-      return hasIndex ? array.lastIndexOf(item, fromIndex) :
+      return hasIndex ? array.lastIndexOf(item, from) :
         array.lastIndexOf(item);
     }
     var i = (hasIndex ? from : array.length);
@@ -708,30 +708,27 @@
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time.
   _.throttle = function(func, wait) {
-    var context, args, timeout, throttling, more, result;
-    var whenDone = _.debounce(function() {
-      more = throttling = false;
-    }, wait);
+    var context, args, timeout, result;
+    var previous = 0;
+    var later = function() {
+      previous = new Date();
+      timeout = null;
+      result = func.apply(context, args);
+    };
     return function() {
-      context = this,
-        args = arguments;
-      var later = function() {
-        timeout = null;
-        if (more) {
-          result = func.apply(context, args);
-        }
-        whenDone();
-      };
-      if (!timeout) {
-        timeout = setTimeout(later, wait);
-      }
-      if (throttling) {
-        more = true;
-      } else {
-        throttling = true;
+      var now = new Date();
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0) {
+        clearTimeout(timeout);
+        previous = now;
+        console.log("in: ", args);
         result = func.apply(context, args);
+      } else if (!timeout) {
+        console.log("out: ", args);
+        timeout = setTimeout(later, remaining);
       }
-      whenDone();
       return result;
     };
   };
