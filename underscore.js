@@ -287,7 +287,8 @@
       return -Infinity;
     }
     var result = {
-      computed: -Infinity
+      computed: -Infinity,
+      value: -Infinity
     };
     each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
@@ -308,7 +309,8 @@
       return Infinity;
     }
     var result = {
-      computed: Infinity
+      computed: Infinity,
+      value: Infinity
     };
     each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
