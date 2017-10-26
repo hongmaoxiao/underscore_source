@@ -270,7 +270,7 @@
     }
     return _.filter(obj, function(value) {
       for (var key in attrs) {
-        if (_.has(attrs, key) && attrs[key] !== value[key]) {
+        if (attrs[key] !== value[key]) {
           return false;
         }
       }
