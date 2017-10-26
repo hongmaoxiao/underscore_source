@@ -646,14 +646,15 @@
   // Delegates to **ECMAScript 5**'s native `Function.bind` if available.
   // We check for `func.bind` first, to fail fast when `func` is undefined.
   _.bind = function bind(func, context) {
+    var args, bound;
     if (func.bind === nativeBind && nativeBind) {
       return nativeBind.apply(func, slice.call(arguments, 1));
     }
     if (!_.isFunction(func)) {
       throw new TypeError;
     }
-    var args = slice.call(arguments, 2);
-    var bound = function() {
+    args = slice.call(arguments, 2);
+    return bound = function() {
       if (!(this instanceof bound)) {
         return func.apply(context, args.concat(slice.call(arguments)));
       }
@@ -663,12 +664,6 @@
       }
       return this;
     };
-    if (func && func.prototype) {
-      ctor.prototype = func.prototype;
-      bound.prototype = new ctor();
-      ctor.prototype = null;
-    }
-    return bound;
   };
 
   // Bind all of an object's methods to that object. Useful for ensuring that
@@ -1288,7 +1283,9 @@
     var source = "__p+='";
     text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
       source += text.slice(index, offset)
-        .replace(escaper, function(match) { return '\\' + escapes[match]; });
+        .replace(escaper, function(match) {
+          return '\\' + escapes[match];
+        });
 
       if (escape) {
         source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
