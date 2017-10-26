@@ -722,10 +722,8 @@
       if (remaining <= 0) {
         clearTimeout(timeout);
         previous = now;
-        console.log("in: ", args);
         result = func.apply(context, args);
       } else if (!timeout) {
-        console.log("out: ", args);
         timeout = setTimeout(later, remaining);
       }
       return result;
