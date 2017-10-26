@@ -1,4 +1,4 @@
-//     Underscore.js 1.4.2
+//     Underscore.js 1.4.3
 //     http://underscorejs.org
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore may be freely distributed under the MIT license.
@@ -26,7 +26,6 @@
   var push = ArrayProto.push,
     slice = ArrayProto.slice,
     concat = ArrayProto.concat,
-    unshift = ArrayProto.unshift,
     toString = ObjProto.toString,
     hasOwnProperty = ObjProto.hasOwnProperty;
 
@@ -70,7 +69,7 @@
   }
 
   // Current version.
-  _.VERSION = '1.4.2';
+  _.VERSION = '1.4.3';
 
   // Collection Functions
   // --------------------
@@ -386,7 +385,7 @@
   // either a string attribute to count by, or a function that returns the
   // criterion.
   _.countBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key, value) {
+    return group(obj, value, context, function(result, key) {
       if (!_.has(result, key)) {
         result[key] = 0;
       }
